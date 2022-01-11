@@ -1,5 +1,6 @@
 plugins {
     java
+    id("org.sourcegrade.style") version "1.1.0"
 }
 
 tasks {
@@ -15,6 +16,7 @@ tasks {
 
 allprojects {
     apply(plugin = "java")
+    apply(plugin = "org.sourcegrade.style")
     version = "0.1.0-SNAPSHOT"
     repositories {
         mavenCentral()
