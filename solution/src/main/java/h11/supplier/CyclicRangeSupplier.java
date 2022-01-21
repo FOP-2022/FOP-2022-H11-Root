@@ -1,4 +1,4 @@
-package h11;
+package h11.supplier;
 
 import java.util.Iterator;
 import java.util.function.Supplier;
