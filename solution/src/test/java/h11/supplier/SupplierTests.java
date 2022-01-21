@@ -1,25 +1,19 @@
-package h11;
+package h11.supplier;
 
-import h11.*;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestAssignment11 {
-
-//    private static Comparator<Integer> comparator = Comparator.naturalOrder();
-    private static Comparator<Integer> comparator = (a, b) -> a < b ? -1 : a > b ? 1 : 0; // alt. a - b (possible overflow)
+public class SupplierTests {
 
     @Test
-    public void testSuppliers() {
-        // h11.ArraySupplier test
+    public void testArraySupplier() {
         ArraySupplier<Integer> arraySupplier1 = new ArraySupplier<>(buildIntegerArray(0, 0, 0));
         ArraySupplier<Integer> arraySupplier2 = new ArraySupplier<>(buildIntegerArray(1, 0, 0));
         ArraySupplier<Integer> arraySupplier3 = new ArraySupplier<>(buildIntegerArray(100, 0, 0));
@@ -42,8 +36,10 @@ public class TestAssignment11 {
                 assertNull(arraySupplier5.get());
             }
         }
+    }
 
-        // h11.CollectionSupplier test
+    @Test
+    public void testCollectionSupplier() {
         CollectionSupplier<Integer> collectionSupplier1 = new CollectionSupplier<>(buildIntegerList(0, 0, 0));
         CollectionSupplier<Integer> collectionSupplier2 = new CollectionSupplier<>(buildIntegerList(1, 0, 0));
         CollectionSupplier<Integer> collectionSupplier3 = new CollectionSupplier<>(buildIntegerList(100, 0, 0));
@@ -67,14 +63,17 @@ public class TestAssignment11 {
                 assertNull(collectionSupplier5.get());
             }
         }
+    }
 
-        // h11.CyclicRangeSupplier test
+    @Test
+    public void testCyclicRangeSupplier() {
         CyclicRangeSupplier cyclicRangeSupplier = new CyclicRangeSupplier(0, 5);
 
         for (int i = 0; i < 20; i++)
             assertEquals(i % (5 + 1), cyclicRangeSupplier.get());
     }
 
+    // TODO: move tests for H2 to own class
     @Test
     public void testBothClassesCharFromUnicode() {
         Random random = new Random();
@@ -102,7 +101,7 @@ public class TestAssignment11 {
         }
     }
 
-    private static Integer[] buildIntegerArray(int length, int start, int offset) {
+    private Integer[] buildIntegerArray(int length, int start, int offset) {
         return Stream
             .generate(new Supplier<Integer>() {
                 private int i = 0;
@@ -116,22 +115,12 @@ public class TestAssignment11 {
             .toArray(Integer[]::new);
     }
 
-    private static LinkedList<Integer> buildIntegerList(int length, int min, int max) {
-        Random random = new Random();
-        LinkedList<Integer> linkedList = Stream
-            .generate(() -> random.nextInt(min, max + 1))
+    private LinkedList<Integer> buildIntegerList(int length, int min, int max) {
+        return Stream
+            .generate(() -> ThreadLocalRandom.current().nextInt(min, max + 1))
             .limit(length)
+            .sorted((a, b) -> a < b ? -1 : a > b ? 1 : 0)
             .collect(LinkedList::new, LinkedList::add, LinkedList::addAll);
-
-        Collections.sort(linkedList, comparator);
-
-        return linkedList;
-
-//        return Stream
-//            .generate(() -> ThreadLocalRandom.current().nextInt(min, max + 1))
-//            .limit(length)
-//            .sorted(comparator)
-//            .collect(LinkedList::new, LinkedList::add, LinkedList::addAll);
     }
 
     private static void assertBetween(int value, int lowerBound, int upperBound) {
