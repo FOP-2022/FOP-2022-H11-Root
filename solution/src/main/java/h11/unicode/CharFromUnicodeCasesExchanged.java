@@ -1,4 +1,4 @@
-package h11;
+package h11.unicode;
 
 import java.util.function.Function;
 
@@ -8,8 +8,8 @@ public class CharFromUnicodeCasesExchanged implements Function<Integer, Characte
     public Character apply(Integer integer) {
         if (integer == null)
             throw new NullPointerException();
-        if (integer < 0 || integer > Character.MAX_VALUE)
-            throw new IllegalArgumentException(integer.toString());
+        if (integer < Character.MIN_VALUE || integer > Character.MAX_VALUE)
+            throw new FormatException(integer);
 
         char character = Character.toChars(integer)[0];
 

@@ -1,6 +1,6 @@
-package h11;
+package h11.unicode;
 
-public class FormatException extends Exception {
+public class FormatException extends RuntimeException {
 
     public FormatException(int i) {
         super(i + " " + generateMessage(i));

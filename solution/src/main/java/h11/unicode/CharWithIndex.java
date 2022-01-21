@@ -1,4 +1,4 @@
-package h11;
+package h11.unicode;
 
 import java.util.Objects;
 

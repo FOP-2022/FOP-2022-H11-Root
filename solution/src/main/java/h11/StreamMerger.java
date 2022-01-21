@@ -1,5 +1,7 @@
 package h11;
 
+import h11.unicode.CharWithIndex;
+
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
