@@ -1,13 +1,15 @@
-import java.util.Arrays;
+package h11;
+
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Supplier;
 
-public class ArraySupplier<T> implements Supplier<T> {
+public class CollectionSupplier<T> implements Supplier<T> {
 
     private final Iterator<T> iterator;
 
-    public ArraySupplier(T[] ts) {
-        iterator = Arrays.stream(ts).iterator();
+    public CollectionSupplier(Collection<T> collection) {
+        iterator = collection.iterator();
     }
 
     @Override
