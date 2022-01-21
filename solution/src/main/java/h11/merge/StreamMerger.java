@@ -1,4 +1,4 @@
-package h11;
+package h11.merge;
 
 import h11.unicode.CharWithIndex;
 

@@ -22,4 +22,22 @@ public class CharWithIndex {
     public int getIndex() {
         return index;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CharWithIndex that = (CharWithIndex) o;
+        return theChar == that.theChar && index == that.index;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(theChar, index);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d: %c", index, theChar);
+    }
 }
