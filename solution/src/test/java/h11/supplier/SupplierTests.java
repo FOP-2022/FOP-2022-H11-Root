@@ -3,6 +3,7 @@ package h11.supplier;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -86,7 +87,7 @@ public class SupplierTests {
             .toArray(Integer[]::new);
     }
 
-    private LinkedList<Integer> buildIntegerList(int length, int min, int max) {
+    private List<Integer> buildIntegerList(int length, int min, int max) {
         return Stream
             .generate(() -> ThreadLocalRandom.current().nextInt(min, max + 1))
             .limit(length)

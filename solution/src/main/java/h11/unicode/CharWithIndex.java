@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public class CharWithIndex {
 
-    private char theChar; // TODO: better name
-    private int index;
+    private final char theChar; // TODO: better name
+    private final int index;
 
     public CharWithIndex(Character character, Integer integer) {
         Objects.requireNonNull(character);
