@@ -69,8 +69,9 @@ public class SupplierTests {
     public void testCyclicRangeSupplier() {
         CyclicRangeSupplier cyclicRangeSupplier = new CyclicRangeSupplier(0, 5);
 
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 20; i++) {
             assertEquals(i % (5 + 1), cyclicRangeSupplier.get());
+        }
     }
 
     private Integer[] buildIntegerArray(int length, int start, int offset) {

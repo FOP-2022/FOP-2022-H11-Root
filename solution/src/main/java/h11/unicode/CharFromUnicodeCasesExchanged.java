@@ -6,18 +6,21 @@ public class CharFromUnicodeCasesExchanged implements Function<Integer, Characte
 
     @Override
     public Character apply(Integer integer) {
-        if (integer == null)
+        if (integer == null) {
             throw new NullPointerException();
-        if (integer < Character.MIN_VALUE || integer > Character.MAX_VALUE)
+        }
+        if (integer < Character.MIN_VALUE || integer > Character.MAX_VALUE) {
             throw new FormatException(integer);
+        }
 
         char character = Character.toChars(integer)[0];
 
-        if (Character.isLowerCase(character))
+        if (Character.isLowerCase(character)) {
             return Character.toUpperCase(character);
-        else if (Character.isUpperCase(character))
+        } else if (Character.isUpperCase(character)) {
             return Character.toLowerCase(character);
-        else
+        } else {
             return character;
+        }
     }
 }

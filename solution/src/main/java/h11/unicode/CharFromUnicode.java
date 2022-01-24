@@ -6,10 +6,12 @@ public class CharFromUnicode implements Function<Integer, Character> {
 
     @Override
     public Character apply(Integer integer) {
-        if (integer == null)
+        if (integer == null) {
             throw new NullPointerException();
-        if (integer < Character.MIN_VALUE || integer > Character.MAX_VALUE)
+        }
+        if (integer < Character.MIN_VALUE || integer > Character.MAX_VALUE) {
             throw new FormatException(integer);
+        }
 
         return Character.toChars(integer)[0];
     }

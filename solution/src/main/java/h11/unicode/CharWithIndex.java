@@ -25,8 +25,12 @@ public class CharWithIndex {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         CharWithIndex that = (CharWithIndex) o;
         return theChar == that.theChar && index == that.index;
     }
