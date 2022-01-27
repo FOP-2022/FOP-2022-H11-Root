@@ -2,37 +2,47 @@ package h11.unicode;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UnicodeTests {
 
     @Test
-    public void testBothClassesCharFromUnicode() {
-        Random random = new Random();
+    public void testCharFromUnicode() {
         CharFromUnicode charFromUnicode = new CharFromUnicode();
+
+        for (int i = 0; i < 5; i++) {
+            int lowercaseLetter = ThreadLocalRandom.current().nextInt('a', 'z' + 1);
+            int uppercaseLetter = ThreadLocalRandom.current().nextInt('A', 'Z' + 1);
+            int specialCharacter = ThreadLocalRandom.current().nextInt(0x20, 0x30);
+            int negativeInvalidNumber = ThreadLocalRandom.current().nextInt(Integer.MIN_VALUE, 0);
+            int positiveInvalidNumber = ThreadLocalRandom.current().nextInt(Character.MAX_CODE_POINT + 1, Integer.MAX_VALUE);
+
+            assertEquals((char) lowercaseLetter, charFromUnicode.apply(lowercaseLetter));
+            assertEquals((char) uppercaseLetter, charFromUnicode.apply(uppercaseLetter));
+            assertEquals((char) specialCharacter, charFromUnicode.apply(specialCharacter));
+            assertThrowsExactly(FormatException.class, () -> charFromUnicode.apply(negativeInvalidNumber));
+            assertThrowsExactly(FormatException.class, () -> charFromUnicode.apply(positiveInvalidNumber));
+        }
+    }
+
+    @Test
+    public void testCharFromUnicodeCasesExchanged() {
         CharFromUnicodeCasesExchanged charFromUnicodeCasesExchanged = new CharFromUnicodeCasesExchanged();
 
         for (int i = 0; i < 5; i++) {
-            int randomSmallChar = random.nextInt('a', 'z' + 1);
-            int randomCapitalChar = random.nextInt('A', 'Z' + 1);
-            int randomOutOfRangeInt = 0;
-            int randomNegativeOutOfRangeInt = random.nextInt(Integer.MIN_VALUE, 0);
-            int randomPositiveOutOfRangeInt = random.nextInt(Character.MAX_CODE_POINT + 1, Integer.MAX_VALUE);
+            int lowercaseLetter = ThreadLocalRandom.current().nextInt('a', 'z' + 1);
+            int uppercaseLetter = ThreadLocalRandom.current().nextInt('A', 'Z' + 1);
+            int specialCharacter = ThreadLocalRandom.current().nextInt(0x20, 0x30);
+            int negativeInvalidNumber = ThreadLocalRandom.current().nextInt(Integer.MIN_VALUE, 0);
+            int positiveInvalidNumber = ThreadLocalRandom.current().nextInt(Character.MAX_CODE_POINT + 1, Integer.MAX_VALUE);
 
-            assertEquals((char) randomSmallChar, charFromUnicode.apply(randomSmallChar));
-            assertEquals((char) randomCapitalChar, charFromUnicode.apply(randomCapitalChar));
-            assertThrows(Exception.class, () -> charFromUnicode.apply(randomOutOfRangeInt));
-            assertThrows(Exception.class, () -> charFromUnicode.apply(randomNegativeOutOfRangeInt));
-            assertThrows(Exception.class, () -> charFromUnicode.apply(randomPositiveOutOfRangeInt));
-
-            assertEquals(Character.toUpperCase((char) randomSmallChar), charFromUnicodeCasesExchanged.apply(randomSmallChar));
-            assertEquals((char) randomCapitalChar, charFromUnicodeCasesExchanged.apply(randomCapitalChar));
-            assertThrows(Exception.class, () -> charFromUnicodeCasesExchanged.apply(randomOutOfRangeInt));
-            assertThrows(Exception.class, () -> charFromUnicodeCasesExchanged.apply(randomNegativeOutOfRangeInt));
-            assertThrows(Exception.class, () -> charFromUnicodeCasesExchanged.apply(randomPositiveOutOfRangeInt));
+            assertEquals(Character.toUpperCase((char) lowercaseLetter), charFromUnicodeCasesExchanged.apply(lowercaseLetter));
+            assertEquals(Character.toLowerCase((char) uppercaseLetter), charFromUnicodeCasesExchanged.apply(uppercaseLetter));
+            assertEquals((char) specialCharacter, charFromUnicodeCasesExchanged.apply(specialCharacter));
+            assertThrowsExactly(FormatException.class, () -> charFromUnicodeCasesExchanged.apply(negativeInvalidNumber));
+            assertThrowsExactly(FormatException.class, () -> charFromUnicodeCasesExchanged.apply(positiveInvalidNumber));
         }
     }
 }

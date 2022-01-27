@@ -14,14 +14,6 @@ public class StreamMerger {
     private final Function<Integer, CharWithIndex> function;
     private final Collector<CharWithIndex, List<CharWithIndex>, CharWithIndex[]> collector;
 
-    /*
-     * 1. remove need to iterate through stream to find out, if an element is null
-     * 2. remove check on stream sorted (just sort it with the comparator?)
-     * just concat streams, filter, sort, map? maybe reduce / collect somewhere?
-     *
-     * helper method to concat streams (varargs),
-     */
-
     public StreamMerger() {
         this.predicate = Objects::nonNull;
         this.comparator = (i1, i2) -> digitSum(i1) - digitSum(i2);
