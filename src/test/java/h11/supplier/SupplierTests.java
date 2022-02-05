@@ -10,6 +10,9 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class for {@link ArraySupplier}, {@link CollectionSupplier} and {@link CyclicRangeSupplier}.
+ */
 public class SupplierTests {
 
     /**
@@ -89,6 +92,7 @@ public class SupplierTests {
     /**
      * Builds an integer array with length {@code length}.
      * The value for each element is calculated with the formula {@code start + i * offset}.
+     *
      * @param length the length of the array
      * @param start  the start value
      * @param offset the offset that will be added with each iteration
@@ -112,6 +116,7 @@ public class SupplierTests {
      * Builds an integer list with size {@code length}.
      * Each element is a randomly generated integer in the closed range defined
      * by {@code min} and {@code max}.
+     *
      * @param length the size of the list
      * @param min    the lower bound for the random integer interval
      * @param max    the upper bound for the random integer interval
@@ -128,6 +133,7 @@ public class SupplierTests {
     /**
      * Asserts that a value is not less than {@code lowerBound} and
      * not greater than {@code upperBound}.
+     *
      * @param value      the value
      * @param lowerBound the minimum value {@code value} may have
      * @param upperBound the maximum value {@code value} may have

@@ -2,11 +2,22 @@ package h11.merge;
 
 import h11.unicode.CharWithIndex;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
+/**
+ * Class for merging multiple streams of integers into an array of {@link CharWithIndex} objects.
+ */
 public class StreamMerger {
 
     private final Predicate<Integer> predicate;
@@ -21,9 +32,10 @@ public class StreamMerger {
     public StreamMerger() {
         this.predicate = Objects::nonNull;
         this.comparator = (i1, i2) -> digitSum(i1) - digitSum(i2);
-        this.function = integer -> integer >= 0 && integer <= Character.MAX_VALUE ? // alternative: try-catch
-            new CharWithIndex(Character.toChars(integer)[0], integer) :
-            null;
+        this.function = integer -> integer >= 0 && integer <= Character.MAX_VALUE
+            ?
+                new CharWithIndex(Character.toChars(integer)[0], integer) :
+                null;
         this.collector = new CharWithIndexCollector();
     }
 
@@ -40,6 +52,7 @@ public class StreamMerger {
      *     </li>
      *     <li>The resulting stream of {@link CharWithIndex} is collected into an array of the same type</li>
      * </ol>
+     *
      * @param integerStreams the array of streams to precess
      * @return the resulting array of {@link CharWithIndex}
      */
@@ -53,6 +66,7 @@ public class StreamMerger {
 
     /**
      * Merge an arbitrary number of streams of integers into one continuous stream.
+     *
      * @param streams a variable amount of streams to be merged
      * @return a continuous stream containing all elements in order
      */
@@ -70,6 +84,7 @@ public class StreamMerger {
     /**
      * Calculate the sum of digits for a given integer.
      * If the integer is negative, its absolute value will be used.
+     *
      * @param integer the integer to calculate the sum for
      * @return the resulting sum of digits for the given integer
      */
@@ -83,7 +98,7 @@ public class StreamMerger {
     }
 
     /**
-     * A collector for accumulating {@link CharWithIndex} objects and saving them in an array of the same type
+     * A collector for accumulating {@link CharWithIndex} objects and saving them in an array of the same type.
      */
     public static class CharWithIndexCollector implements Collector<CharWithIndex, List<CharWithIndex>, CharWithIndex[]> {
         /** {@inheritDoc} */

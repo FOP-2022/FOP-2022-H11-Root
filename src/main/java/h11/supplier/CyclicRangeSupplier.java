@@ -4,6 +4,9 @@ import java.util.Iterator;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+/**
+ * A supplier for infinite elements in a closed cyclic range.
+ */
 public class CyclicRangeSupplier implements Supplier<Integer> {
 
     private final Iterator<Integer> iterator;
@@ -15,6 +18,7 @@ public class CyclicRangeSupplier implements Supplier<Integer> {
      * to {@code last} inclusive. If {@link Iterator#next()} is called when the last value
      * returned was {@code last}, the iterator will wrap around and start again at {@code start}.
      * If both values are equal, that will be the only value the iterator will return.
+     *
      * @param first the value to start at
      * @param last  the value after which to loop around
      */
@@ -22,17 +26,20 @@ public class CyclicRangeSupplier implements Supplier<Integer> {
         iterator = Stream
             .iterate(
                 first,
-                i -> i == last ?
-                    first :
-                    first < last ?
-                        i + 1 :
-                        i - 1
+                i -> i == last
+                    ?
+                        first :
+                        first < last
+                            ?
+                                i + 1 :
+                                i - 1
             )
             .iterator();
     }
 
     /**
-     * Returns the next value in the specified range
+     * Returns the next value in the specified range.
+     *
      * @return the next value
      */
     @Override

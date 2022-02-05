@@ -9,6 +9,9 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+/**
+ * Test class for {@link StreamMerger}.
+ */
 public class StreamMergerTest {
 
     /**

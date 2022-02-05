@@ -1,11 +1,14 @@
 package h11.unicode;
 
+/**
+ * {@link FormatException} signals that a code point is invalid or can not be
+ * represented by a {@link Character} object.
+ */
 public class FormatException extends RuntimeException {
 
     /**
      * Initializes a new {@link FormatException} object.
-     * {@link FormatException} signals that a code point is invalid or can not be
-     * represented by a {@link Character} object.
+     *
      * @param i the invalid code point
      */
     public FormatException(int i) {
@@ -14,6 +17,7 @@ public class FormatException extends RuntimeException {
 
     /**
      * Generates the specific exception message, depending on the value of {@code i}.
+     *
      * @param i the invalid code point
      * @return a specific exception message describing the issue
      */
