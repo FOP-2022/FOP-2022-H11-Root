@@ -30,13 +30,13 @@ public class StreamMerger {
      * Sets all required attributes to their designated value.
      */
     public StreamMerger() {
-        this.predicate = Objects::nonNull;
-        this.comparator = (i1, i2) -> digitSum(i1) - digitSum(i2);
-        this.function = integer -> integer >= 0 && integer <= Character.MAX_VALUE
-            ?
-                new CharWithIndex(Character.toChars(integer)[0], integer) :
-                null;
-        this.collector = new CharWithIndexCollector();
+        predicate = Objects::nonNull;
+        comparator = (i1, i2) -> digitSum(i1) - digitSum(i2);
+        function = integer ->
+            integer >= 0 && integer <= Character.MAX_VALUE
+                ? new CharWithIndex(Character.toChars(integer)[0], integer)
+                : null;
+        collector = new CharWithIndexCollector();
     }
 
     /**
@@ -101,19 +101,25 @@ public class StreamMerger {
      * A collector for accumulating {@link CharWithIndex} objects and saving them in an array of the same type.
      */
     public static class CharWithIndexCollector implements Collector<CharWithIndex, List<CharWithIndex>, CharWithIndex[]> {
-        /** {@inheritDoc} */
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Supplier<List<CharWithIndex>> supplier() {
             return ArrayList::new;
         }
 
-        /** {@inheritDoc} */
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public BiConsumer<List<CharWithIndex>, CharWithIndex> accumulator() {
             return List::add;
         }
 
-        /** {@inheritDoc} */
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public BinaryOperator<List<CharWithIndex>> combiner() {
             return (list1, list2) -> {
@@ -123,13 +129,17 @@ public class StreamMerger {
             };
         }
 
-        /** {@inheritDoc} */
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Function<List<CharWithIndex>, CharWithIndex[]> finisher() {
             return list -> list.toArray(CharWithIndex[]::new);
         }
 
-        /** {@inheritDoc} */
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Set<Characteristics> characteristics() {
             return Set.of();

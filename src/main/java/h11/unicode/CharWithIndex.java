@@ -22,8 +22,8 @@ public class CharWithIndex {
         Objects.requireNonNull(character);
         Objects.requireNonNull(integer);
 
-        this.theChar = character;
-        this.index = integer;
+        theChar = character;
+        index = integer;
     }
 
     /**
