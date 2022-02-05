@@ -8,6 +8,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UnicodeTests {
 
+    /**
+     * Tests {@link CharFromUnicode#apply(Integer)}.
+     * Assert that the correct value is returned or the correct exception is thrown for:
+     * <ul>
+     *     <li>a random lowercase letter</li>
+     *     <li>a random uppercase letter</li>
+     *     <li>a random special character</li>
+     *     <li>a random negative integer</li>
+     *     <li>a random integer greater than {@link Character#MAX_CODE_POINT}</li>
+     * </ul>
+     */
     @Test
     public void testCharFromUnicode() {
         CharFromUnicode charFromUnicode = new CharFromUnicode();
@@ -27,6 +38,17 @@ public class UnicodeTests {
         }
     }
 
+    /**
+     * Tests {@link CharFromUnicodeCasesExchanged#apply(Integer)}.
+     * Assert that the correct value is returned or the correct exception is thrown for:
+     * <ul>
+     *     <li>a random lowercase letter</li>
+     *     <li>a random uppercase letter</li>
+     *     <li>a random special character</li>
+     *     <li>a random negative integer</li>
+     *     <li>a random integer greater than {@link Character#MAX_CODE_POINT}</li>
+     * </ul>
+     */
     @Test
     public void testCharFromUnicodeCasesExchanged() {
         CharFromUnicodeCasesExchanged charFromUnicodeCasesExchanged = new CharFromUnicodeCasesExchanged();

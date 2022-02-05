@@ -12,6 +12,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SupplierTests {
 
+    /**
+     * Tests {@link ArraySupplier#get()} with 5 instances.
+     * One instance has length 0, the second one has length 1 and the last 3 each have length 100.
+     */
     @Test
     public void testArraySupplier() {
         ArraySupplier<Integer> arraySupplier1 = new ArraySupplier<>(buildIntegerArray(0, 0, 0));
@@ -38,6 +42,10 @@ public class SupplierTests {
         }
     }
 
+    /**
+     * Tests {@link CollectionSupplier#get()} with 5 instances.
+     * One instance has length 0, the second one has length 1 and the last 3 each have length 100.
+     */
     @Test
     public void testCollectionSupplier() {
         CollectionSupplier<Integer> collectionSupplier1 = new CollectionSupplier<>(buildIntegerList(0, 0, 0));
@@ -65,6 +73,10 @@ public class SupplierTests {
         }
     }
 
+    /**
+     * Tests {@link CyclicRangeSupplier#get()}.
+     * The cyclic range is tested at least 3 times.
+     */
     @Test
     public void testCyclicRangeSupplier() {
         CyclicRangeSupplier cyclicRangeSupplier = new CyclicRangeSupplier(0, 5);
@@ -74,6 +86,14 @@ public class SupplierTests {
         }
     }
 
+    /**
+     * Builds an integer array with length {@code length}.
+     * The value for each element is calculated with the formula {@code start + i * offset}.
+     * @param length the length of the array
+     * @param start  the start value
+     * @param offset the offset that will be added with each iteration
+     * @return an array of {@link Integer}
+     */
     private Integer[] buildIntegerArray(int length, int start, int offset) {
         return Stream
             .generate(new Supplier<Integer>() {
@@ -88,6 +108,15 @@ public class SupplierTests {
             .toArray(Integer[]::new);
     }
 
+    /**
+     * Builds an integer list with size {@code length}.
+     * Each element is a randomly generated integer in the closed range defined
+     * by {@code min} and {@code max}.
+     * @param length the size of the list
+     * @param min    the lower bound for the random integer interval
+     * @param max    the upper bound for the random integer interval
+     * @return a sorted list with random integers between {@code min} and {@code max} (inclusive)
+     */
     private List<Integer> buildIntegerList(int length, int min, int max) {
         return Stream
             .generate(() -> ThreadLocalRandom.current().nextInt(min, max + 1))
@@ -96,6 +125,13 @@ public class SupplierTests {
             .collect(LinkedList::new, LinkedList::add, LinkedList::addAll);
     }
 
+    /**
+     * Asserts that a value is not less than {@code lowerBound} and
+     * not greater than {@code upperBound}.
+     * @param value      the value
+     * @param lowerBound the minimum value {@code value} may have
+     * @param upperBound the maximum value {@code value} may have
+     */
     private static void assertBetween(int value, int lowerBound, int upperBound) {
         assertTrue(value >= lowerBound);
         assertTrue(value <= upperBound);

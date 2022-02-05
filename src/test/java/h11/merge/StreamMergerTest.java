@@ -11,6 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class StreamMergerTest {
 
+    /**
+     * Tests {@link StreamMerger#merge(Stream[])} with an array of size 3.
+     */
     @Test
     public void testMerge() {
         StreamMerger streamMerger = new StreamMerger();

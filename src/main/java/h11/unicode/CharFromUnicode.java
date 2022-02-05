@@ -4,6 +4,13 @@ import java.util.function.Function;
 
 public class CharFromUnicode implements Function<Integer, Character> {
 
+    /**
+     * Maps the given {@link Integer} to a corresponding {@link Character} object.
+     * @param integer the integer to map
+     * @return a {@link Character} with code point {@code integer}
+     * @throws NullPointerException if {@code integer} is {@code null}
+     * @throws FormatException if the given integer cannot be represented by {@link Character}
+     */
     @Override
     public Character apply(Integer integer) {
         if (integer == null) {
