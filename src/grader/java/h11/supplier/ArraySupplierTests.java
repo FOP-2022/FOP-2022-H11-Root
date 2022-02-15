@@ -11,9 +11,18 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static h11.utils.Assertions.*;
+import static h11.utils.Assertions.assertClassExists;
+import static h11.utils.Assertions.assertClassHasConstructor;
+import static h11.utils.Assertions.assertClassHasExactModifiers;
+import static h11.utils.Assertions.assertClassHasMethod;
+import static h11.utils.Assertions.assertClassImplements;
+import static h11.utils.Assertions.assertClassTypeParameters;
+import static h11.utils.Assertions.assertConstructor;
+import static h11.utils.Assertions.assertMethod;
+import static h11.utils.Assertions.assertSame;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
@@ -43,7 +52,7 @@ public class ArraySupplierTests {
             Type[] parameterTypes = constructor.getGenericParameterTypes();
             return parameterTypes.length == 1 && parameterTypes[0].getTypeName().equals("T[]");
         });
-        assertConstructor(arraySupplierConstructor, Modifier.PUBLIC);
+        assertConstructor(arraySupplierConstructor, Modifier.PUBLIC, (Predicate<Type>) null);
 
         get = assertClassHasMethod(arraySupplierClass, method ->
             method.getName().equals("get") && method.getParameters().length == 0);

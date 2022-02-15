@@ -6,12 +6,25 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.opentest4j.AssertionFailedError;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static h11.utils.Assertions.*;
+import static h11.utils.Assertions.assertClassExists;
+import static h11.utils.Assertions.assertClassHasConstructor;
+import static h11.utils.Assertions.assertClassHasExactModifiers;
+import static h11.utils.Assertions.assertClassHasMethod;
+import static h11.utils.Assertions.assertClassImplements;
+import static h11.utils.Assertions.assertClassTypeParameters;
+import static h11.utils.Assertions.assertConstructor;
+import static h11.utils.Assertions.assertMethod;
+import static h11.utils.Assertions.assertSame;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
@@ -41,7 +54,7 @@ public class CollectionSupplierTests {
             Type[] parameterTypes = constructor.getGenericParameterTypes();
             return parameterTypes.length == 1 && parameterTypes[0].getTypeName().equals(Collection.class.getName() + "<T>");
         });
-        assertConstructor(collectionSupplierConstructor, Modifier.PUBLIC);
+        assertConstructor(collectionSupplierConstructor, Modifier.PUBLIC, (Predicate<Type>) null);
 
         get = assertClassHasMethod(collectionSupplierClass, method ->
             method.getName().equals("get") && method.getParameters().length == 0);
@@ -72,7 +85,7 @@ public class CollectionSupplierTests {
         for (Object[] parameters : parameterMatrix) {
             Object instance;
             try {
-                instance = collectionSupplierConstructor.newInstance(List.of(parameters));
+                instance = collectionSupplierConstructor.newInstance(Arrays.asList(parameters));
             } catch (InstantiationException e) {
                 throw new AssertionFailedError("Could not create instance of " + CLASS_NAME, e);
             } catch (IllegalAccessException e) {
