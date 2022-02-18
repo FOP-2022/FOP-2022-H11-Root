@@ -3,6 +3,7 @@ package h11.utils;
 import org.jetbrains.annotations.Nullable;
 import org.opentest4j.AssertionFailedError;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InaccessibleObjectException;
@@ -305,7 +306,7 @@ public class Assertions extends org.junit.jupiter.api.Assertions {
         for (int i = 0; i < parameterPredicates.length; i++) {
             if (parameterPredicates[i] != null && !parameterPredicates[i].test(actualParameterTypes[i])) {
                 fail(("Parameter #%d for constructor with parameter list [%s]"
-                    + " does not match predicate").formatted(i, parametersToString(actualParameterTypes)));
+                    + " does not match predicate").formatted(i + 1, parametersToString(actualParameterTypes)));
             }
         }
     }
@@ -382,9 +383,9 @@ public class Assertions extends org.junit.jupiter.api.Assertions {
         assertEquals(parameterPredicates.length, actualParameterTypes.length,
             "Method \"%s\" does not have expected number of parameters".formatted(methodToString(method)));
         for (int i = 0; i < parameterPredicates.length; i++) {
-            if (parameterPredicates[i] != null && parameterPredicates[i].test(actualParameterTypes[i])) {
+            if (parameterPredicates[i] != null && !parameterPredicates[i].test(actualParameterTypes[i])) {
                 fail("Parameter #%d of Method \"%s\" does not match given predicate"
-                    .formatted(i, methodToString(method)));
+                    .formatted(i + 1, methodToString(method)));
             }
         }
         if (methodName != null) {
@@ -413,6 +414,27 @@ public class Assertions extends org.junit.jupiter.api.Assertions {
             fail("Could not access field \"%s\"".formatted(methodToString(method)), e);
         } catch (InvocationTargetException e) {
             fail("An exception occurred while invoking method \"%s\"".formatted(methodToString(method)), e);
+        }
+    }
+
+    /**
+     * Asserts that {@code method} is annotated with the annotations in {@code annotations}.
+     *
+     * @param method      the method to check annotations for
+     * @param annotations an array of annotations the method must have
+     */
+    public static void assertAnnotations(Method method, Class<?>... annotations) {
+        Set<Class<?>> methodAnnotations = Stream
+            .concat(Arrays.stream(method.getAnnotations()), Arrays.stream(method.getDeclaredAnnotations()))
+            .map(Annotation::annotationType)
+            .collect(Collectors.toUnmodifiableSet());
+
+        for (Class<?> annotation : annotations) {
+            if (!methodAnnotations.contains(annotation)) {
+                throw new AssertionFailedError(
+                    "Method %s is not annotated with %s".formatted(method.getName(), annotation.getName())
+                );
+            }
         }
     }
 
