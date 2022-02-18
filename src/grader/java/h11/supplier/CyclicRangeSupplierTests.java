@@ -1,13 +1,12 @@
 package h11.supplier;
 
+import h11.utils.AbstractTestClass;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.opentest4j.AssertionFailedError;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -30,13 +29,18 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  * Tests for class {@link CyclicRangeSupplier}.
  */
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class CyclicRangeSupplierTests {
-
-    private static final String CLASS_NAME = "h11.supplier.CyclicRangeSupplier";
+public class CyclicRangeSupplierTests extends AbstractTestClass {
 
     private static Class<?> cyclicRangeSupplierClass = null;
     private static Constructor<?> cyclicRangeSupplierConstructor = null;
     private static Method get = null;
+
+    /**
+     * Creates a new {@link CyclicRangeSupplierTests} object.
+     */
+    public CyclicRangeSupplierTests() {
+        super("h11.supplier.CyclicRangeSupplier");
+    }
 
     /**
      * Tests for correctness of class, constructor and method definitions.
@@ -44,7 +48,7 @@ public class CyclicRangeSupplierTests {
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
     void testDefinitions() {
-        cyclicRangeSupplierClass = assertClassExists(CLASS_NAME);
+        cyclicRangeSupplierClass = assertClassExists(className);
         assertClassHasExactModifiers(cyclicRangeSupplierClass, Modifier.PUBLIC);
         assertClassNotGeneric(cyclicRangeSupplierClass);
         assertClassImplements(cyclicRangeSupplierClass,
@@ -71,10 +75,10 @@ public class CyclicRangeSupplierTests {
     @Test
     @DisplayName("2 | Class instance and method tests")
     void testInstance() {
-        assumeTrue(cyclicRangeSupplierClass != null, "Class %s could not be found".formatted(CLASS_NAME));
+        assumeTrue(cyclicRangeSupplierClass != null, "Class %s could not be found".formatted(className));
         assumeTrue(cyclicRangeSupplierConstructor != null,
-            "Constructor for class %s could not be found".formatted(CLASS_NAME));
-        assumeTrue(get != null, "Method %s#get() could not be found".formatted(CLASS_NAME));
+            "Constructor for class %s could not be found".formatted(className));
+        assumeTrue(get != null, "Method %s#get() could not be found".formatted(className));
 
         Integer[][] parameterMatrix = {
             {  0,   9},
@@ -85,31 +89,14 @@ public class CyclicRangeSupplierTests {
         };
 
         for (Integer[] parameters : parameterMatrix) {
-            Object instance;
-            try {
-                instance = cyclicRangeSupplierConstructor.newInstance((Object[]) parameters);
-            } catch (InstantiationException e) {
-                throw new AssertionFailedError("Could not create instance of " + CLASS_NAME, e);
-            } catch (IllegalAccessException e) {
-                throw new AssertionFailedError("Could not access constructor of class " + CLASS_NAME, e);
-            } catch (InvocationTargetException e) {
-                throw new AssertionFailedError("An exception occurred while instantiating " + CLASS_NAME,
-                    e.getCause());
-            }
+            Object instance = newInstance(cyclicRangeSupplierConstructor, (Object[]) parameters);
 
             Iterator<Integer> iterator = IntStream
                 .iterate(parameters[0], i -> i == parameters[1] ? parameters[0] : parameters[0] < parameters[1] ? i + 1 : i - 1)
                 .iterator();
 
             for (int i = 0; i < 50; i++) {
-                try {
-                    assertEquals(iterator.next(), get.invoke(instance), "Values did not match in iteration " + i);
-                } catch (IllegalAccessException e) {
-                    throw new AssertionFailedError("Could not access constructor of class " + CLASS_NAME, e);
-                } catch (InvocationTargetException e) {
-                    throw new AssertionFailedError("An exception occurred while invoking %s#get()".formatted(CLASS_NAME),
-                        e.getCause());
-                }
+                assertEquals(iterator.next(), invokeMethod(get, instance), "Values did not match in iteration " + i);
             }
         }
     }

@@ -1,13 +1,12 @@
 package h11.supplier;
 
+import h11.utils.AbstractTestClass;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.opentest4j.AssertionFailedError;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -31,13 +30,18 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  * Tests for class {@link CollectionSupplier}.
  */
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class CollectionSupplierTests {
-
-    private static final String CLASS_NAME = "h11.supplier.CollectionSupplier";
+public class CollectionSupplierTests extends AbstractTestClass {
 
     private static Class<?> collectionSupplierClass = null;
     private static Constructor<?> collectionSupplierConstructor = null;
     private static Method get = null;
+
+    /**
+     * Creates a new {@link CollectionSupplierTests} object.
+     */
+    public CollectionSupplierTests() {
+        super("h11.supplier.CollectionSupplier");
+    }
 
     /**
      * Tests for correctness of class, constructor and method definitions.
@@ -45,7 +49,7 @@ public class CollectionSupplierTests {
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
     void testDefinitions() {
-        collectionSupplierClass = assertClassExists(CLASS_NAME);
+        collectionSupplierClass = assertClassExists(className);
         assertClassHasExactModifiers(collectionSupplierClass, Modifier.PUBLIC);
         assertClassTypeParameters(collectionSupplierClass, new String[] {"T"}, new String[][] {{Object.class.getName()}});
         assertClassImplements(collectionSupplierClass, Supplier.class.getName() + "<T>");
@@ -68,10 +72,10 @@ public class CollectionSupplierTests {
     @Test
     @DisplayName("2 | Class instance and method tests")
     void testInstance() {
-        assumeTrue(collectionSupplierClass != null, "Class %s could not be found".formatted(CLASS_NAME));
+        assumeTrue(collectionSupplierClass != null, "Class %s could not be found".formatted(className));
         assumeTrue(collectionSupplierConstructor != null,
-            "Constructor for class %s could not be found".formatted(CLASS_NAME));
-        assumeTrue(get != null, "Method %s#get() could not be found".formatted(CLASS_NAME));
+            "Constructor for class %s could not be found".formatted(className));
+        assumeTrue(get != null, "Method %s#get() could not be found".formatted(className));
 
         Object[][] parameterMatrix = {
             "Hello world!".split(""),
@@ -83,27 +87,10 @@ public class CollectionSupplierTests {
         };
 
         for (Object[] parameters : parameterMatrix) {
-            Object instance;
-            try {
-                instance = collectionSupplierConstructor.newInstance(Arrays.asList(parameters));
-            } catch (InstantiationException e) {
-                throw new AssertionFailedError("Could not create instance of " + CLASS_NAME, e);
-            } catch (IllegalAccessException e) {
-                throw new AssertionFailedError("Could not access constructor of class " + CLASS_NAME, e);
-            } catch (InvocationTargetException e) {
-                throw new AssertionFailedError("An exception occurred while instantiating " + CLASS_NAME,
-                    e.getCause());
-            }
+            Object instance = newInstance(collectionSupplierConstructor, Arrays.asList(parameters));
 
             for (int i = 0; i < parameters.length + 5; i++) {
-                try {
-                    assertSame(i < parameters.length ? parameters[i] : null, get.invoke(instance));
-                } catch (IllegalAccessException e) {
-                    throw new AssertionFailedError("Could not access constructor of class " + CLASS_NAME, e);
-                } catch (InvocationTargetException e) {
-                    throw new AssertionFailedError("An exception occurred while invoking %s#get()".formatted(CLASS_NAME),
-                        e.getCause());
-                }
+                assertSame(i < parameters.length ? parameters[i] : null, invokeMethod(get, instance));
             }
         }
     }
