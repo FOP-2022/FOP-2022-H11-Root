@@ -11,6 +11,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -77,12 +83,17 @@ public class ArraySupplierTests extends AbstractTestClass {
             "Constructor for class %s could not be found".formatted(className));
         assumeTrue(get != null, "Method %s#get() could not be found".formatted(className));
 
+        Map<List<ArrayList<LinkedList<Set<Vector<Integer>>>>>[],
+            Map<Map<List<ArrayList<LinkedList<Set<Vector<Integer>>>>>[],
+                List<ArrayList<LinkedList<Set<Vector<Integer>>>>>[]>,
+                List<ArrayList<LinkedList<Set<Vector<Integer>>>>>>> abomination = Map.of();
         Object[][] parameterMatrix = {
             "Hello world!".split(""),
             {1, 2, 3, 4, 5, 6, 7, 8, 9},
             {new Object(), new Object(), new Object(), new Object(), new Object()},
             {null, null, null},
             {"Abc", Integer.MIN_VALUE, Long.MAX_VALUE, 'X', null, new Object()},
+            {abomination},
             {}
         };
 
