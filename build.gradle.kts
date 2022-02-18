@@ -25,14 +25,18 @@ submit {
 // This is to prevent the grader from being present in the submission jar
 
 val grader: SourceSet by sourceSets.creating {
-    compileClasspath += sourceSets.test.get().compileClasspath
-    runtimeClasspath += output + compileClasspath
+    val test = sourceSets.test.get()
+    compileClasspath += test.compileClasspath + test.output
+    runtimeClasspath += output + compileClasspath + test.runtimeClasspath
 }
 
 dependencies {
     implementation("org.jetbrains:annotations:23.0.0")
     "graderImplementation"("org.sourcegrade:jagr-launcher:0.4.0-SNAPSHOT")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+    implementation("org.mockito:mockito-core:4.3.1")
+    implementation("fr.inria.gforge.spoon:spoon-core:10.0.0")
+    //"graderImplementation"(":test")
 }
 
 application {
