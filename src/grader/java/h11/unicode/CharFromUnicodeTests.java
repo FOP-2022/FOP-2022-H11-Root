@@ -26,21 +26,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
- * Tests for class {@link CharFromUnicodeCasesExchanged}.
+ * Tests for class {@link CharFromUnicode}.
  */
 @TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class CharFromUnicodeCasesExchangedTest extends AbstractTestClass {
+public class CharFromUnicodeTests extends AbstractTestClass {
 
-    private static Class<?> charFromUnicodeCasesExchangedClass = null;
-    private static Constructor<?> charFromUnicodeCasesExchangedConstructor = null;
+    private static Class<?> charFromUnicodeClass = null;
+    private static Constructor<?> charFromUnicodeConstructor = null;
     private static Method apply = null;
 
     /**
-     * Creates a new {@link CharFromUnicodeCasesExchangedTest} object.
+     * Creates a new {@link CharFromUnicodeTests} object.
      */
-    public CharFromUnicodeCasesExchangedTest() {
-        super("h11.unicode.CharFromUnicodeCasesExchanged");
+    public CharFromUnicodeTests() {
+        super("h11.unicode.CharFromUnicode");
     }
 
     /**
@@ -49,15 +49,15 @@ public class CharFromUnicodeCasesExchangedTest extends AbstractTestClass {
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
     void testDefinitions() {
-        charFromUnicodeCasesExchangedClass = assertClassExists(className);
-        assertClassHasExactModifiers(charFromUnicodeCasesExchangedClass, Modifier.PUBLIC);
-        assertClassImplements(charFromUnicodeCasesExchangedClass,
+        charFromUnicodeClass = assertClassExists(className);
+        assertClassHasExactModifiers(charFromUnicodeClass, Modifier.PUBLIC);
+        assertClassImplements(charFromUnicodeClass,
             "%s<%s, %s>".formatted(Function.class.getName(), Integer.class.getName(), Character.class.getName()));
 
-        charFromUnicodeCasesExchangedConstructor = assertClassHasConstructor(charFromUnicodeCasesExchangedClass,
-            constructor -> constructor.getParameters().length == 0);
+        charFromUnicodeConstructor = assertClassHasConstructor(charFromUnicodeClass, constructor ->
+            constructor.getParameters().length == 0);
 
-        apply = assertClassHasMethod(charFromUnicodeCasesExchangedClass, method ->
+        apply = assertClassHasMethod(charFromUnicodeClass, method ->
             method.getName().equals("apply")
                 && method.getReturnType().equals(Character.class)
                 && method.getParameterTypes().length == 1
@@ -70,19 +70,19 @@ public class CharFromUnicodeCasesExchangedTest extends AbstractTestClass {
     }
 
     /**
-     * Tests for {@link CharFromUnicodeCasesExchanged#apply(Integer)}.
+     * Tests for {@link CharFromUnicode#apply(Integer)}.
      */
     @Test
     @DisplayName("2 | apply(java.lang.Integer)")
     void testApply() {
-        assumeTrue(charFromUnicodeCasesExchangedClass != null, "Class %s could not be found".formatted(className));
-        assumeTrue(charFromUnicodeCasesExchangedConstructor != null,
+        assumeTrue(charFromUnicodeClass != null, "Class %s could not be found".formatted(className));
+        assumeTrue(charFromUnicodeConstructor != null,
             "Constructor for class %s could not be found".formatted(className));
         assumeTrue(apply != null,
             "Method %s#apply(java.lang.Integer) could not be found".formatted(className));
 
-        Class<?> formatExceptionClass = FormatExceptionTest.getFormatExceptionClass();
-        Object instance = newInstance(charFromUnicodeCasesExchangedConstructor);
+        Class<?> formatExceptionClass = FormatExceptionTests.getFormatExceptionClass();
+        Object instance = newInstance(charFromUnicodeConstructor);
         boolean exceptionThrown1 = false, exceptionThrown2 = false, exceptionThrown3 = false;
 
         try {
@@ -119,9 +119,9 @@ public class CharFromUnicodeCasesExchangedTest extends AbstractTestClass {
             "Expected a FormatException when invoking %s#apply(java.lang.Integer) with an invalid number as parameter"
                 .formatted(className));
 
-        assertEquals('F', (Character) invokeMethod(apply, instance, (int) 'f'));
-        assertEquals('O', (Character) invokeMethod(apply, instance, (int) 'o'));
-        assertEquals('P', (Character) invokeMethod(apply, instance, (int) 'p'));
+        assertEquals(Character.MIN_VALUE, (Character) invokeMethod(apply, instance, (int) Character.MIN_VALUE));
+        assertEquals((char) (Character.MAX_VALUE / 2), (Character) invokeMethod(apply, instance, (int) Character.MAX_VALUE / 2));
+        assertEquals(Character.MAX_VALUE, (Character) invokeMethod(apply, instance, (int) Character.MAX_VALUE));
     }
 
     // TODO: add check for unsafe operations

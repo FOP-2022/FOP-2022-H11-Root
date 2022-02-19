@@ -29,15 +29,15 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  */
 @TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class FormatExceptionTest extends AbstractTestClass {
+public class FormatExceptionTests extends AbstractTestClass {
 
     private static Class<?> formatExceptionClass = null;
     private static Constructor<?> formatExceptionConstructor = null;
 
     /**
-     * Creates a new {@link FormatExceptionTest} object.
+     * Creates a new {@link FormatExceptionTests} object.
      */
-    public FormatExceptionTest() {
+    public FormatExceptionTests() {
         super("h11.unicode.FormatException");
     }
 
@@ -75,7 +75,7 @@ public class FormatExceptionTest extends AbstractTestClass {
                 Integer.MIN_VALUE,
                 Character.MAX_VALUE + 1,
                 Character.MAX_CODE_POINT - 1)
-            .collect(Collectors.toMap(i -> i, FormatExceptionTest::getErrorMessage));
+            .collect(Collectors.toMap(i -> i, FormatExceptionTests::getErrorMessage));
 
         for (Map.Entry<Integer, String> entry : parameterMapping.entrySet()) {
             assertEquals(entry.getValue(),
