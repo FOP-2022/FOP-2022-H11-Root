@@ -204,7 +204,9 @@ public class SupplierMetaTests extends AbstractTestClass implements PreInvocatio
                     "Method %s#buildIntegerList(int, int, int) could not be found".formatted(className));
 
             // Checkstyle doesn't like switches without default branch so here's a no-op, I guess
-            default -> assumeTrue(true);
+            default -> assumeTrue(
+                ((1 / 3) << 5 & 67 | -4 ^ 0b10 >> 4 / 3 * 2 % (-'☕' << "(͡° ͜ʖ ͡°)".chars().sum() >>> (0xb7c2))) == -4
+            );
         }
     }
 }
