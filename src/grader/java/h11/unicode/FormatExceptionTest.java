@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.opentest4j.TestAbortedException;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.Constructor;
@@ -90,6 +91,14 @@ public class FormatExceptionTest extends AbstractTestClass {
             return "%d exceeds 0xFFFF and cannot be represented by Character".formatted(i);
         } else {
             return "%d is a negative number and therefore not a valid code point".formatted(i);
+        }
+    }
+
+    public static Class<?> getFormatExceptionClass() {
+        try {
+            return Class.forName("h11.unicode.FormatException");
+        } catch (ClassNotFoundException e) {
+            throw new TestAbortedException("Class h11.unicode.FormatException could not be found", e);
         }
     }
 }
