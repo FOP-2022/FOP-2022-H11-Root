@@ -104,7 +104,8 @@ public class CharWithIndexTests extends AbstractTestClass {
         assumeTrue(getIndex != null,
             "Method %s#getIndex() could not be found".formatted(className));
 
-        boolean exceptionThrown1 = false, exceptionThrown2 = false;
+        boolean exceptionThrown1 = false;
+        boolean exceptionThrown2 = false;
 
         try {
             newInstance(charWithIndexConstructor, 'A', null);

@@ -83,7 +83,9 @@ public class CharFromUnicodeCasesExchangedTests extends AbstractTestClass {
 
         Class<?> formatExceptionClass = FormatExceptionTests.getFormatExceptionClass();
         Object instance = newInstance(charFromUnicodeCasesExchangedConstructor);
-        boolean exceptionThrown1 = false, exceptionThrown2 = false, exceptionThrown3 = false;
+        boolean exceptionThrown1 = false;
+        boolean exceptionThrown2 = false;
+        boolean exceptionThrown3 = false;
 
         try {
             invokeMethod(apply, instance, (Object) null);

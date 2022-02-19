@@ -94,6 +94,11 @@ public class FormatExceptionTests extends AbstractTestClass {
         }
     }
 
+    /**
+     * Returns the {@link Class} object for {@link FormatException}.
+     *
+     * @return the {@link Class} object
+     */
     public static Class<?> getFormatExceptionClass() {
         try {
             return Class.forName("h11.unicode.FormatException");
