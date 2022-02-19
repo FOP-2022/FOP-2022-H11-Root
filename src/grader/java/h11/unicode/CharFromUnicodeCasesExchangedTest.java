@@ -25,21 +25,21 @@ import static h11.utils.Assertions.assertMethod;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
- * Tests for class {@link CharFromUnicode}.
+ * Tests for class {@link CharFromUnicodeCasesExchanged}.
  */
 @TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class CharFromUnicodeTest extends AbstractTestClass {
+public class CharFromUnicodeCasesExchangedTest extends AbstractTestClass {
 
-    private static Class<?> charFromUnicodeClass = null;
-    private static Constructor<?> charFromUnicodeConstructor = null;
+    private static Class<?> charFromUnicodeCasesExchangedClass = null;
+    private static Constructor<?> charFromUnicodeCasesExchangedConstructor = null;
     private static Method apply = null;
 
     /**
-     * Creates a new {@link CharFromUnicodeTest} object.
+     * Creates a new {@link CharFromUnicodeCasesExchangedTest} object.
      */
-    public CharFromUnicodeTest() {
-        super("h11.unicode.CharFromUnicode");
+    public CharFromUnicodeCasesExchangedTest() {
+        super("h11.unicode.CharFromUnicodeCasesExchanged");
     }
 
     /**
@@ -48,15 +48,15 @@ public class CharFromUnicodeTest extends AbstractTestClass {
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
     void testDefinitions() {
-        charFromUnicodeClass = assertClassExists(className);
-        assertClassHasExactModifiers(charFromUnicodeClass, Modifier.PUBLIC);
-        assertClassImplements(charFromUnicodeClass,
+        charFromUnicodeCasesExchangedClass = assertClassExists(className);
+        assertClassHasExactModifiers(charFromUnicodeCasesExchangedClass, Modifier.PUBLIC);
+        assertClassImplements(charFromUnicodeCasesExchangedClass,
             "%s<%s, %s>".formatted(Function.class.getName(), Integer.class.getName(), Character.class.getName()));
 
-        charFromUnicodeConstructor = assertClassHasConstructor(charFromUnicodeClass, constructor ->
-            constructor.getParameters().length == 0);
+        charFromUnicodeCasesExchangedConstructor = assertClassHasConstructor(charFromUnicodeCasesExchangedClass,
+            constructor -> constructor.getParameters().length == 0);
 
-        apply = assertClassHasMethod(charFromUnicodeClass, method ->
+        apply = assertClassHasMethod(charFromUnicodeCasesExchangedClass, method ->
             method.getName().equals("apply")
                 && method.getReturnType().equals(Character.class)
                 && method.getParameterTypes().length == 1
@@ -69,19 +69,19 @@ public class CharFromUnicodeTest extends AbstractTestClass {
     }
 
     /**
-     * Tests for {@link CharFromUnicode#apply(Integer)}.
+     * Tests for {@link CharFromUnicodeCasesExchanged#apply(Integer)}.
      */
     @Test
     @DisplayName("2 | apply(java.lang.Integer)")
     void testApply() {
-        assumeTrue(charFromUnicodeClass != null, "Class %s could not be found".formatted(className));
-        assumeTrue(charFromUnicodeConstructor != null,
+        assumeTrue(charFromUnicodeCasesExchangedClass != null, "Class %s could not be found".formatted(className));
+        assumeTrue(charFromUnicodeCasesExchangedConstructor != null,
             "Constructor for class %s could not be found".formatted(className));
         assumeTrue(apply != null,
             "Method %s#apply(java.lang.Integer) could not be found".formatted(className));
 
         Class<?> formatExceptionClass = FormatExceptionTest.getFormatExceptionClass();
-        Object instance = newInstance(charFromUnicodeConstructor);
+        Object instance = newInstance(charFromUnicodeCasesExchangedConstructor);
 
         try {
             invokeMethod(apply, instance, (Object) null);
@@ -105,9 +105,9 @@ public class CharFromUnicodeTest extends AbstractTestClass {
             }
         }
 
-        assertEquals(Character.MIN_VALUE, (Character) invokeMethod(apply, instance, (int) Character.MIN_VALUE));
-        assertEquals((char) (Character.MAX_VALUE / 2), (Character) invokeMethod(apply, instance, (int) Character.MAX_VALUE / 2));
-        assertEquals(Character.MAX_VALUE, (Character) invokeMethod(apply, instance, (int) Character.MAX_VALUE));
+        assertEquals('A', (Character) invokeMethod(apply, instance, (int) 'a'));
+        assertEquals('M', (Character) invokeMethod(apply, instance, (int) 'm'));
+        assertEquals('Z', (Character) invokeMethod(apply, instance, (int) 'z'));
     }
 
     // TODO: add check for unsafe operations
