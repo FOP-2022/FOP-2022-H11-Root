@@ -22,6 +22,7 @@ import static h11.utils.Assertions.assertClassHasMethod;
 import static h11.utils.Assertions.assertClassImplements;
 import static h11.utils.Assertions.assertEquals;
 import static h11.utils.Assertions.assertMethod;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
@@ -82,6 +83,7 @@ public class CharFromUnicodeTest extends AbstractTestClass {
 
         Class<?> formatExceptionClass = FormatExceptionTest.getFormatExceptionClass();
         Object instance = newInstance(charFromUnicodeConstructor);
+        boolean exceptionThrown1 = false, exceptionThrown2 = false, exceptionThrown3 = false;
 
         try {
             invokeMethod(apply, instance, (Object) null);
@@ -89,6 +91,7 @@ public class CharFromUnicodeTest extends AbstractTestClass {
             if (!e.getCause().getClass().equals(NullPointerException.class)) {
                 throw new AssertionFailedError("An unexpected exception was thrown", e);
             }
+            exceptionThrown1 = true;
         }
         try {
             invokeMethod(apply, instance, Character.MIN_VALUE - 1);
@@ -96,6 +99,7 @@ public class CharFromUnicodeTest extends AbstractTestClass {
             if (!e.getCause().getClass().equals(formatExceptionClass)) {
                 throw new AssertionFailedError("An unexpected exception was thrown", e);
             }
+            exceptionThrown2 = true;
         }
         try {
             invokeMethod(apply, instance, Character.MAX_VALUE + 1);
@@ -103,7 +107,17 @@ public class CharFromUnicodeTest extends AbstractTestClass {
             if (!e.getCause().getClass().equals(formatExceptionClass)) {
                 throw new AssertionFailedError("An unexpected exception was thrown", e);
             }
+            exceptionThrown3 = true;
         }
+        assertTrue(exceptionThrown1,
+            "Expected a NullPointerException when invoking %s#apply(java.lang.Integer) with null as parameter"
+                .formatted(className));
+        assertTrue(exceptionThrown2,
+            "Expected a FormatException when invoking %s#apply(java.lang.Integer) with an invalid number as parameter"
+                .formatted(className));
+        assertTrue(exceptionThrown3,
+            "Expected a FormatException when invoking %s#apply(java.lang.Integer) with an invalid number as parameter"
+                .formatted(className));
 
         assertEquals(Character.MIN_VALUE, (Character) invokeMethod(apply, instance, (int) Character.MIN_VALUE));
         assertEquals((char) (Character.MAX_VALUE / 2), (Character) invokeMethod(apply, instance, (int) Character.MAX_VALUE / 2));
