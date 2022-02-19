@@ -155,7 +155,7 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
     void testComparator() {
         comparator.setAccessible(true);
 
-        Comparator<Integer> referenceComparator = Comparator.comparingInt(StreamMergerTests::digitSum);
+        Comparator<Integer> referenceComparator = Comparator.comparingInt(StreamMergerSolution::digitSum);
         Comparator<Integer> actualComparator = getFieldValue(comparator, newInstance(streamMergerConstructor));
 
         Arrays
@@ -309,15 +309,18 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
     void testMerge() {
         Object instance = newInstance(streamMergerConstructor);
         Class<?> charWithIndexClass = getCharWithIndexClass();
-        Stream<Integer>[] streams = (Stream<Integer>[]) new Stream<?>[] {
-            Stream.of(0, 1, 2, 3, 4, 5),
-            Stream.of(10, 100, 1000, 10000),
-            Stream.of(1, 2, 4, null, null, 32),
-            Stream.of(-1, 0, null, 1, Character.MAX_VALUE, Character.MAX_VALUE + 1)
+        Integer[][] streamElements = new Integer[][] {
+            {0, 1, 2, 3, 4, 5},
+            {10, 100, 1000, 10000},
+            {1, 2, 4, null, null, 32},
+            {-1, 0, null, 1, (int) Character.MAX_VALUE, Character.MAX_VALUE + 1}
         };
 
-        Object[] referenceResultArray = StreamMergerSolution.merge(streams);
-        Object[] actualResultArray = invokeMethod(merge, instance, (Object) streams);
+        Object[] referenceResultArray = StreamMergerSolution.merge(
+            Arrays.stream(streamElements).map(Arrays::stream).toArray(Stream[]::new)
+        );
+        Object[] actualResultArray = invokeMethod(merge, instance,
+            (Object) Arrays.stream(streamElements).map(Arrays::stream).toArray(Stream[]::new));
 
         assertEquals(referenceResultArray.length, actualResultArray.length,
             "Length of returned array differs from expected length");
@@ -365,18 +368,6 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
         }
     }
 
-    /**
-     * @see StreamMerger#digitSum(Integer)
-     */
-    private static Integer digitSum(Integer integer) {
-        return integer
-            .toString()
-            .chars()
-            .filter(i -> i >= '0' && i <= '9')
-            .map(i -> i - '0')
-            .sum();
-    }
-
     private static Object newCharWithIndexInstance() {
         final String className = "h11.unicode.CharWithIndex";
 
@@ -412,12 +403,15 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
     }
 
     /**
+     * Compact solution for StreamMerger.
+     * Please, CheckStyle, just shut up.
+     *
      * @see StreamMerger
      */
     private static class StreamMergerSolution {
 
         private static final Predicate<Integer> predicate = Objects::nonNull;
-        private static final Comparator<Integer> comparator = Comparator.comparing(StreamMergerTests::digitSum);
+        private static final Comparator<Integer> comparator = Comparator.comparing(StreamMergerSolution::digitSum);
         private static final Function<Integer, Object> function = integer -> {
             if (integer >= Character.MIN_VALUE && integer <= Character.MAX_VALUE) {
                 return new Object();
@@ -428,7 +422,10 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
         private static final Collector<Object, List<Object>, Object[]> collector = Collector.of(
             ArrayList::new,
             List::add,
-            (list1, list2) -> {list1.addAll(list2); return list1;},
+            (list1, list2) -> {
+                list1.addAll(list2);
+                return list1;
+            },
             List::toArray
         );
 
@@ -441,11 +438,16 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
         }
 
         private static <T> Stream<T> concat(Stream<T>[] streams) {
-            Stream<T> resultStream = Stream.empty();
-            for (Stream<T> stream : streams) {
-                resultStream = Stream.concat(resultStream, stream);
-            }
-            return resultStream;
+            return Arrays.stream(streams).flatMap(stream -> stream);
+        }
+
+        private static Integer digitSum(Integer integer) {
+            return integer
+                .toString()
+                .chars()
+                .filter(i -> i >= '0' && i <= '9')
+                .map(i -> i - '0')
+                .sum();
         }
     }
 }
