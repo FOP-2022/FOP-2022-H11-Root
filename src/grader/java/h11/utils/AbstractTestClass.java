@@ -3,6 +3,7 @@ package h11.utils;
 import org.opentest4j.AssertionFailedError;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -48,9 +49,10 @@ public abstract class AbstractTestClass {
      * Invokes {@code method} with {@code params} as parameters and returns the
      * value returned by the invoked method.
      *
-     * @param method the method to invoke
-     * @param params the parameters to pass to {@code method}
-     * @param <T>    the return type
+     * @param method   the method to invoke
+     * @param instance the context, i.e. instance of a class with this field
+     * @param params   the parameters to pass to {@code method}
+     * @param <T>      the return type
      * @return the value returned by invoking {@code method}
      * @throws AssertionFailedError if any exception is thrown during the invocation of {@code method}
      */
@@ -63,6 +65,23 @@ public abstract class AbstractTestClass {
                 e.getCause());
         } catch (IllegalAccessException e) {
             throw new AssertionFailedError("Could not access method %s".formatted(method.getName()), e);
+        }
+    }
+
+    /**
+     * Returns the value of {@code field} in the context of {@code instance}.
+     *
+     * @param field    the field
+     * @param instance the context, i.e. instance of a class with this field
+     * @param <T>      the return type
+     * @return the value of {@code field}
+     * @throws AssertionFailedError if the field is not accessible
+     */
+    protected <T> T getFieldValue(Field field, Object instance) {
+        try {
+            return (T) field.get(instance);
+        } catch (IllegalAccessException e) {
+            throw new AssertionFailedError("Could not access field %s".formatted(field.getName()), e);
         }
     }
 }
