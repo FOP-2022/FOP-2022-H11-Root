@@ -34,8 +34,8 @@ dependencies {
     implementation("org.jetbrains:annotations:23.0.0")
     "graderImplementation"("org.sourcegrade:jagr-launcher:0.4.0-SNAPSHOT")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
-    implementation("org.mockito:mockito-core:4.3.1")
-    implementation("fr.inria.gforge.spoon:spoon-core:10.0.0")
+    "graderImplementation"("org.mockito:mockito-core:4.3.1")
+    "graderImplementation"("fr.inria.gforge.spoon:spoon-core:10.0.0")
     //"graderImplementation"(":test")
 }
 

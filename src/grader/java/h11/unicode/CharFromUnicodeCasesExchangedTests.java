@@ -1,6 +1,7 @@
 package h11.unicode;
 
 import h11.utils.AbstractTestClass;
+import h11.utils.CharCastChecker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -126,5 +127,17 @@ public class CharFromUnicodeCasesExchangedTests extends AbstractTestClass {
         assertEquals('P', (Character) invokeMethod(apply, instance, (int) 'p'));
     }
 
-    // TODO: add check for unsafe operations
+    /**
+     * Check that {@link CharFromUnicodeCasesExchangedTests} doesn't use unsafe casts to {@code char}.
+     */
+    @Test
+    @DisplayName("2-R | No unsafe casts to char requirement")
+    void testUnsafeCast() {
+        assumeTrue(charFromUnicodeCasesExchangedClass != null, "Class %s could not be found".formatted(className));
+        assumeTrue(charFromUnicodeCasesExchangedConstructor != null,
+            "Constructor for class %s could not be found".formatted(className));
+        assumeTrue(apply != null, "Method %s#apply(java.lang.Integer) could not be found".formatted(className));
+
+        CharCastChecker.checkModel(className);
+    }
 }
