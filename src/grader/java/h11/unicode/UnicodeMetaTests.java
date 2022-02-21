@@ -54,7 +54,7 @@ public class UnicodeMetaTests extends AbstractTestClass implements PreInvocation
      */
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
-    void testDefinitions() {
+    public void testDefinitions() {
         unicodeTestsClass = assertClassExists(className);
 
         unicodeTestsConstructor = assertClassHasConstructor(unicodeTestsClass, constructor ->
@@ -86,7 +86,7 @@ public class UnicodeMetaTests extends AbstractTestClass implements PreInvocation
     @TestID(2)
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("2 | testCharFromUnicode()")
-    void metaTest_testCharFromUnicode() {
+    public void metaTest_testCharFromUnicode() {
         Map<Predicate<Integer>, Boolean> invocationCheckList = Stream.<Predicate<Integer>>of(
                 i -> isInCharacterRange(i) && Character.isLowerCase((char) (int) i),
                 i -> isInCharacterRange(i) && Character.isUpperCase((char) (int) i),
@@ -125,7 +125,7 @@ public class UnicodeMetaTests extends AbstractTestClass implements PreInvocation
     @TestID(3)
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("3 | testCharFromUnicodeCasesExchanged()")
-    void metaTest_testCharFromUnicodeCasesExchanged() {
+    public void metaTest_testCharFromUnicodeCasesExchanged() {
         Map<Predicate<Integer>, Boolean> invocationCheckList = Stream.<Predicate<Integer>>of(
                 i -> isInCharacterRange(i) && Character.isLowerCase((char) (int) i),
                 i -> isInCharacterRange(i) && Character.isUpperCase((char) (int) i),

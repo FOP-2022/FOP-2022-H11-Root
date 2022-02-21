@@ -78,7 +78,7 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
      */
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
-    void testDefinitions() {
+    public void testDefinitions() {
         streamMergerClass = assertClassExists(className);
         assertClassHasExactModifiers(streamMergerClass, Modifier.PUBLIC);
 
@@ -133,7 +133,7 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
     @TestID(2)
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("2 | Field predicate")
-    void testPredicate() {
+    public void testPredicate() {
         predicate.setAccessible(true);
 
         Predicate<Integer> actualPredicate = getFieldValue(predicate, newInstance(streamMergerConstructor));
@@ -152,7 +152,7 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
     @TestID(3)
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("3 | Field comparator")
-    void testComparator() {
+    public void testComparator() {
         comparator.setAccessible(true);
 
         Comparator<Integer> referenceComparator = Comparator.comparingInt(StreamMergerSolution::digitSum);
@@ -181,7 +181,7 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
     @TestID(4)
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("4 | Field function")
-    void testFunction() {
+    public void testFunction() {
         function.setAccessible(true);
 
         Function<Integer, ?> actualFunction = getFieldValue(function, newInstance(streamMergerConstructor));
@@ -209,7 +209,7 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
     @TestID(5)
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("5 | Collector supplier and finisher")
-    void testCollectorSupplierFinisher() {
+    public void testCollectorSupplierFinisher() {
         collector.setAccessible(true);
 
         Collector<Object, Object, Object[]> actualCollector = getFieldValue(collector, newInstance(streamMergerConstructor));
@@ -234,7 +234,7 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
     @TestID(6)
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("6 | Collector accumulator")
-    void testAccumulator() {
+    public void testAccumulator() {
         collector.setAccessible(true);
 
         Collector<Object, Object, Object[]> actualCollector = getFieldValue(collector, newInstance(streamMergerConstructor));
@@ -265,7 +265,7 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
     @TestID(7)
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("7 | Collector combiner")
-    void testCombiner() {
+    public void testCombiner() {
         collector.setAccessible(true);
 
         Collector<Object, Object, Object[]> actualCollector = getFieldValue(collector, newInstance(streamMergerConstructor));
@@ -306,7 +306,7 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
     @TestID(8)
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("8 | merge(java.util.stream.Stream[])")
-    void testMerge() {
+    public void testMerge() {
         Object instance = newInstance(streamMergerConstructor);
         Class<?> charWithIndexClass = getCharWithIndexClass();
         Integer[][] streamElements = new Integer[][] {

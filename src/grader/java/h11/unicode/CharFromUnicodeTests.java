@@ -49,7 +49,7 @@ public class CharFromUnicodeTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
-    void testDefinitions() {
+    public void testDefinitions() {
         charFromUnicodeClass = assertClassExists(className);
         assertClassHasExactModifiers(charFromUnicodeClass, Modifier.PUBLIC);
         assertClassImplements(charFromUnicodeClass,
@@ -75,7 +75,7 @@ public class CharFromUnicodeTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("2 | apply(java.lang.Integer)")
-    void testApply() {
+    public void testApply() {
         assumeTrue(charFromUnicodeClass != null, "Class %s could not be found".formatted(className));
         assumeTrue(charFromUnicodeConstructor != null,
             "Constructor for class %s could not be found".formatted(className));
@@ -132,7 +132,7 @@ public class CharFromUnicodeTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("2-R | No unsafe casts to char requirement")
-    void testUnsafeCast() {
+    public void testUnsafeCast() {
         assumeTrue(charFromUnicodeClass != null, "Class %s could not be found".formatted(className));
         assumeTrue(charFromUnicodeConstructor != null,
             "Constructor for class %s could not be found".formatted(className));

@@ -48,7 +48,7 @@ public class CollectionSupplierTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
-    void testDefinitions() {
+    public void testDefinitions() {
         collectionSupplierClass = assertClassExists(className);
         assertClassHasExactModifiers(collectionSupplierClass, Modifier.PUBLIC);
         assertClassTypeParameters(collectionSupplierClass, new String[] {"T"}, new String[][] {{Object.class.getName()}});
@@ -71,7 +71,7 @@ public class CollectionSupplierTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("2 | Class instance and method tests")
-    void testInstance() {
+    public void testInstance() {
         assumeTrue(collectionSupplierClass != null, "Class %s could not be found".formatted(className));
         assumeTrue(collectionSupplierConstructor != null,
             "Constructor for class %s could not be found".formatted(className));

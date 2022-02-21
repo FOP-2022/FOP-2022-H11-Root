@@ -47,7 +47,7 @@ public class CyclicRangeSupplierTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
-    void testDefinitions() {
+    public void testDefinitions() {
         cyclicRangeSupplierClass = assertClassExists(className);
         assertClassHasExactModifiers(cyclicRangeSupplierClass, Modifier.PUBLIC);
         assertClassNotGeneric(cyclicRangeSupplierClass);
@@ -74,7 +74,7 @@ public class CyclicRangeSupplierTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("2 | Class instance and method tests")
-    void testInstance() {
+    public void testInstance() {
         assumeTrue(cyclicRangeSupplierClass != null, "Class %s could not be found".formatted(className));
         assumeTrue(cyclicRangeSupplierConstructor != null,
             "Constructor for class %s could not be found".formatted(className));

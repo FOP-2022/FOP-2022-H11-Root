@@ -52,7 +52,7 @@ public class CharWithIndexTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
-    void testDefinitions() {
+    public void testDefinitions() {
         charWithIndexClass = assertClassExists(className);
         assertClassHasExactModifiers(charWithIndexClass, Modifier.PUBLIC);
 
@@ -93,7 +93,7 @@ public class CharWithIndexTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("2 | Class instance, fields and getter")
-    void testApply() {
+    public void testInstance() {
         assumeTrue(charWithIndexClass != null, "Class %s could not be found".formatted(className));
         assumeTrue(theChar != null, "Field %s#theChar could not be found".formatted(className));
         assumeTrue(index != null, "Field %s#index could not be found".formatted(className));

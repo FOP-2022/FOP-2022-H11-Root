@@ -54,7 +54,7 @@ public class ArraySupplierTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
-    void testDefinitions() {
+    public void testDefinitions() {
         arraySupplierClass = assertClassExists(className);
         assertClassHasExactModifiers(arraySupplierClass, Modifier.PUBLIC);
         assertClassTypeParameters(arraySupplierClass, new String[] {"T"}, new String[][] {{Object.class.getName()}});
@@ -77,7 +77,7 @@ public class ArraySupplierTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("2 | Class instance and method tests")
-    void testInstance() {
+    public void testInstance() {
         assumeTrue(arraySupplierClass != null, "Class %s could not be found".formatted(className));
         assumeTrue(arraySupplierConstructor != null,
             "Constructor for class %s could not be found".formatted(className));

@@ -46,7 +46,7 @@ public class FormatExceptionTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("1 | Class and constructor definitions")
-    void testDefinitions() {
+    public void testDefinitions() {
         formatExceptionClass = assertClassExists(className);
         assertClassHasExactModifiers(formatExceptionClass, Modifier.PUBLIC);
         assertClassExtends(formatExceptionClass, type -> type.getTypeName().equals(RuntimeException.class.getName()));
@@ -63,7 +63,7 @@ public class FormatExceptionTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("2 | Class instance")
-    void testInstance() {
+    public void testInstance() {
         assumeTrue(formatExceptionClass != null, "Class %s could not be found".formatted(className));
         assumeTrue(formatExceptionConstructor != null,
             "Constructor for class %s could not be found".formatted(className));

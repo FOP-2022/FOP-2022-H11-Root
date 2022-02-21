@@ -39,7 +39,7 @@ public class StreamMergerMetaTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
-    void testDefinitions() {
+    public void testDefinitions() {
         streamMergerTestClass = assertClassExists(className);
 
         streamMergerTestConstructor = assertClassHasConstructor(streamMergerTestClass, constructor ->
@@ -57,7 +57,7 @@ public class StreamMergerMetaTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("2 | java.util.stream.Stream#of(Object[]) in testMerge()")
-    void testIndex0Correct() {
+    public void testIndex0Correct() {
 
     }
 
@@ -66,7 +66,7 @@ public class StreamMergerMetaTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("3 | java.util.stream.Stream#generate(java.util.function.Supplier) in testMerge()")
-    void testIndex1Correct() {
+    public void testIndex1Correct() {
 
     }
 
@@ -75,7 +75,7 @@ public class StreamMergerMetaTests extends AbstractTestClass {
      */
     @Test
     @DisplayName("4 | java.util.stream.IntStream#range(int, int) in testMerge()")
-    void testIndex2Correct() {
+    public void testIndex2Correct() {
 
     }
 }

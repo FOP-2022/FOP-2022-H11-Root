@@ -55,7 +55,7 @@ public class SupplierMetaTests extends AbstractTestClass implements PreInvocatio
      */
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
-    void testDefinitions() {
+    public void testDefinitions() {
         supplierTestsClass = assertClassExists(className);
         assertClassHasExactModifiers(supplierTestsClass, Modifier.PUBLIC);
 
@@ -119,7 +119,7 @@ public class SupplierMetaTests extends AbstractTestClass implements PreInvocatio
     @TestID(2)
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("2 | buildIntegerArray(int, int, int)")
-    void testBuildIntegerArray() {
+    public void testBuildIntegerArray() {
         buildIntegerArray.setAccessible(true);
 
         Integer[][] parameterMatrix = {
@@ -152,7 +152,7 @@ public class SupplierMetaTests extends AbstractTestClass implements PreInvocatio
     @TestID(3)
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("3 | buildIntegerList(int, int, int)")
-    void testBuildIntegerList() {
+    public void testBuildIntegerList() {
         buildIntegerList.setAccessible(true);
 
         Integer[][] parameterMatrix = {
@@ -186,6 +186,39 @@ public class SupplierMetaTests extends AbstractTestClass implements PreInvocatio
         }
     }
 
+    /**
+     * Tests for {@link SupplierTests#testArraySupplier()}.
+     */
+    @Test
+    @TestID(4)
+    @ExtendWith(PreInvocationCheck.Interceptor.class)
+    @DisplayName("4 | testArraySupplier()")
+    public void metaTest_testArraySupplier() {
+
+    }
+
+    /**
+     * Tests for {@link SupplierTests#testCollectionSupplier()}.
+     */
+    @Test
+    @TestID(5)
+    @ExtendWith(PreInvocationCheck.Interceptor.class)
+    @DisplayName("5 | testCollectionSupplier()")
+    public void metaTest_testCollectionSupplier() {
+
+    }
+
+    /**
+     * Tests for {@link SupplierTests#testCyclicRangeSupplier()}.
+     */
+    @Test
+    @TestID(6)
+    @ExtendWith(PreInvocationCheck.Interceptor.class)
+    @DisplayName("6 | testCyclicRangeSupplier()")
+    public void metaTest_testCyclicRangeSupplier() {
+
+    }
+
     // TODO: implement tests for testArraySupplier, testCollectionSupplier and testCyclicRangeSupplier
 
     @Override
@@ -202,6 +235,18 @@ public class SupplierMetaTests extends AbstractTestClass implements PreInvocatio
             case 3 ->
                 assumeTrue(buildIntegerList != null,
                     "Method %s#buildIntegerList(int, int, int) could not be found".formatted(className));
+
+            case 4 ->
+                assumeTrue(testArraySupplier != null,
+                    "Method %s#testArraySupplier() could not be found".formatted(className));
+
+            case 5 ->
+                assumeTrue(testCollectionSupplier != null,
+                    "Method %s#testCollectionSupplier() could not be found".formatted(className));
+
+            case 6 ->
+                assumeTrue(testCyclicRangeSupplier != null,
+                    "Method %s#testCyclicRangeSupplier() could not be found".formatted(className));
 
             // Checkstyle doesn't like switches without default branch so here's a no-op, I guess
             default -> assumeTrue(
