@@ -3,6 +3,7 @@ import org.sourcegrade.submitter.submit
 plugins {
     java
     application
+    eclipse
     id("org.sourcegrade.style") version "1.2.0"
     id("org.sourcegrade.submitter") version "0.4.0"
 }
@@ -19,10 +20,8 @@ submit {
     studentId = "ab12cdef"
     firstName = "sol_first"
     lastName = "sol_last"
+    requireTests = false
 }
-
-// It is (for now) important to create the grader sourceSet AFTER the "submit" task has been configured.
-// This is to prevent the grader from being present in the submission jar
 
 val grader: SourceSet by sourceSets.creating {
     val test = sourceSets.test.get()
@@ -31,12 +30,10 @@ val grader: SourceSet by sourceSets.creating {
 }
 
 dependencies {
+    "graderCompileOnly"("org.sourcegrade:jagr-launcher:0.4.0-SNAPSHOT")
     implementation("org.jetbrains:annotations:23.0.0")
-    "graderImplementation"("org.sourcegrade:jagr-launcher:0.4.0-SNAPSHOT")
+    "graderImplementation"("org.ow2.asm:asm:9.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
-    "graderImplementation"("org.mockito:mockito-inline:4.3.1")
-    "graderImplementation"("fr.inria.gforge.spoon:spoon-core:10.0.0")
-    //"graderImplementation"(":test")
 }
 
 application {
@@ -45,17 +42,7 @@ application {
 
 tasks {
     val runDir = File("build/run")
-    named<JavaExec>("run") {
-        doFirst {
-            runDir.mkdirs()
-        }
-        workingDir = runDir
-    }
     test {
-        doFirst {
-            runDir.mkdirs()
-        }
-        workingDir = runDir
         useJUnitPlatform()
     }
     val graderTest by creating(Test::class) {
@@ -69,9 +56,9 @@ tasks {
         useJUnitPlatform()
     }
     named("check") {
-        dependsOn(graderTest)
+        // dependsOn(graderTest)
     }
-    create<Jar>("graderJar") {
+    val graderJar by creating(Jar::class) {
         group = "build"
         afterEvaluate {
             archiveFileName.set("FOP-2022-H11-${project.version}.jar")
@@ -79,6 +66,25 @@ tasks {
             from(sourceSets.test.get().allSource)
             from(grader.allSource)
         }
+    }
+    val graderLibs by creating(Jar::class) {
+        group = "build"
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        val runtimeDeps = grader.runtimeClasspath.mapNotNull {
+            if (it.path.toLowerCase().contains("h11")) {
+                null
+            } else if (it.isDirectory) {
+                it
+            } else {
+                zipTree(it)
+            }
+        }
+        from(runtimeDeps)
+        archiveFileName.set("FOP-2022-H11-${project.version}-libs.jar")
+    }
+    create("graderAll") {
+        group = "build"
+        dependsOn(graderJar, graderLibs)
     }
     withType<JavaCompile> {
         options.encoding = "UTF-8"
