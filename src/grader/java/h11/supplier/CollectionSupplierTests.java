@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -24,17 +25,21 @@ import static h11.utils.Assertions.assertClassTypeParameters;
 import static h11.utils.Assertions.assertConstructor;
 import static h11.utils.Assertions.assertMethod;
 import static h11.utils.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Tests for class {@link CollectionSupplier}.
  */
+@TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 public class CollectionSupplierTests extends AbstractTestClass {
 
     private static Class<?> collectionSupplierClass = null;
     private static Constructor<?> collectionSupplierConstructor = null;
     private static Method get = null;
+
+    public static boolean ILLEGAL_INSTRUCTION_USED = false;
 
     /**
      * Creates a new {@link CollectionSupplierTests} object.
@@ -95,5 +100,15 @@ public class CollectionSupplierTests extends AbstractTestClass {
         }
     }
 
-    // TODO: add checks for requirement violation
+    /**
+     * Check that {@link CollectionSupplier} does not use calls to illegal methods.
+     * Needs to have bytecode transformations done in order to work.
+     *
+     * @see h11.utils.transform.CollectionSupplierVisitor
+     */
+    @Test
+    @DisplayName("2-R | No illegal classes / methods requirement")
+    public void testIllegalInvocations() {
+        assertFalse(ILLEGAL_INSTRUCTION_USED, "Invocations of illegal classes or methods detected");
+    }
 }

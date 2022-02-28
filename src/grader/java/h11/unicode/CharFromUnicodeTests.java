@@ -1,7 +1,6 @@
 package h11.unicode;
 
 import h11.utils.AbstractTestClass;
-import h11.utils.CharCastChecker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -23,12 +22,14 @@ import static h11.utils.Assertions.assertClassHasMethod;
 import static h11.utils.Assertions.assertClassImplements;
 import static h11.utils.Assertions.assertEquals;
 import static h11.utils.Assertions.assertMethod;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Tests for class {@link CharFromUnicode}.
  */
+@SuppressWarnings("JavadocReference")
 @TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 public class CharFromUnicodeTests extends AbstractTestClass {
@@ -36,6 +37,8 @@ public class CharFromUnicodeTests extends AbstractTestClass {
     private static Class<?> charFromUnicodeClass = null;
     private static Constructor<?> charFromUnicodeConstructor = null;
     private static Method apply = null;
+
+    public static boolean ILLEGAL_INSTRUCTION_USED = false;
 
     /**
      * Creates a new {@link CharFromUnicodeTests} object.
@@ -129,15 +132,15 @@ public class CharFromUnicodeTests extends AbstractTestClass {
 
     /**
      * Check that {@link CharFromUnicode} doesn't use unsafe casts to {@code char}.
+     * Needs to have bytecode transformations done in order to work.
+     *
+     * @see h11.utils.transform.UnicodeVisitors.CharFromUnicodeVisitor
      */
     @Test
     @DisplayName("2-R | No unsafe casts to char requirement")
     public void testUnsafeCast() {
-        assumeTrue(charFromUnicodeClass != null, "Class %s could not be found".formatted(className));
-        assumeTrue(charFromUnicodeConstructor != null,
-            "Constructor for class %s could not be found".formatted(className));
-        assumeTrue(apply != null, "Method %s#apply(java.lang.Integer) could not be found".formatted(className));
-
-        CharCastChecker.checkModel(className);
+        ILLEGAL_INSTRUCTION_USED = false;
+        invokeMethod(apply, newInstance(charFromUnicodeConstructor), (int) 'a');
+        assertFalse(ILLEGAL_INSTRUCTION_USED, "Unsafe cast to char detected (I2C instruction used)");
     }
 }

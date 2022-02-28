@@ -326,7 +326,7 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
             "Length of returned array differs from expected length");
         for (int i = 0; i < referenceResultArray.length; i++) {
             if (referenceResultArray[i] != null) {
-                assertEquals(charWithIndexClass, actualResultArray[i].getClass(),
+                assertEquals(charWithIndexClass, actualResultArray[i] != null ? actualResultArray[i].getClass() : null,
                     "Class of object at index %d does not match expected one".formatted(i));
             } else {
                 assertNull(actualResultArray[i], "Element at index %d should be null".formatted(i));

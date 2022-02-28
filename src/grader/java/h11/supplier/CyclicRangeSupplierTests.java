@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 /**
  * Tests for class {@link CyclicRangeSupplier}.
  */
+@TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 public class CyclicRangeSupplierTests extends AbstractTestClass {
 

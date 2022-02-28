@@ -3,19 +3,26 @@ package h11.supplier;
 import h11.utils.AbstractTestClass;
 import h11.utils.PreInvocationCheck;
 import h11.utils.TestID;
+import kotlin.Pair;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.opentest4j.AssertionFailedError;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static h11.utils.Assertions.assertAnnotations;
 import static h11.utils.Assertions.assertClassExists;
@@ -42,6 +49,15 @@ public class SupplierMetaTests extends AbstractTestClass implements PreInvocatio
     private static Method testCyclicRangeSupplier = null;
     private static Method buildIntegerArray = null;
     private static Method buildIntegerList = null;
+
+    private final static List<Integer[]> BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS = new ArrayList<>();
+    private final static List<Integer[]> BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS = new ArrayList<>();
+    private final static List<Integer[]> CYCLIC_RANGE_SUPPLIER_CONSTRUCTOR_INTERCEPTED_ARGUMENTS = new ArrayList<>();
+    /**
+     * Updated via bytecode transformation whenever {@link CyclicRangeSupplier#get()}
+     * is invoked in {@link SupplierTests#testCyclicRangeSupplier()}.
+     */
+    @SuppressWarnings("FieldMayBeFinal") public static int CYCLIC_RANGE_SUPPLIER_GET_CALLS = 0;
 
     /**
      * Creates a new {@link SupplierMetaTests} object.
@@ -188,38 +204,104 @@ public class SupplierMetaTests extends AbstractTestClass implements PreInvocatio
 
     /**
      * Tests for {@link SupplierTests#testArraySupplier()}.
+     * Needs to have bytecode transformations done in order to work.
+     *
+     * @see h11.utils.transform.SupplierTestVisitors.ArraySupplierMethodVisitor
      */
     @Test
     @TestID(4)
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("4 | testArraySupplier()")
     public void metaTest_testArraySupplier() {
+        Map<Pair<Predicate<Integer[]>, String>, Boolean> buildIntegerArrayInvocationPredicates = Stream
+            .<Pair<Predicate<Integer[]>, String>>of(
+                new Pair<>(arguments -> arguments[0] == 0,
+                    "buildIntegerArray(int, int, int) was not called with length == 0 at least once"),
+                new Pair<>(arguments -> arguments[0] == 1,
+                    "buildIntegerArray(int, int, int) was not called with length == 1 at least once"),
+                new Pair<>(arguments -> arguments[0] >= 100 && arguments[2] < -1,
+                    "buildIntegerArray(int, int, int) was not called with length >= 100 and offset < -1 at least once"),
+                new Pair<>(arguments -> arguments[0] >= 100 && arguments[2] == 0,
+                    "buildIntegerArray(int, int, int) was not called with length >= 100 and offset == 0 at least once"),
+                new Pair<>(arguments -> arguments[0] >= 100 && arguments[2] > 1,
+                    "buildIntegerArray(int, int, int) was not called with length >= 100 and offset > 1 at least once")
+            )
+            .collect(Collectors.toMap(pair -> pair, pair -> false));
 
+        BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS.clear();
+        invokeMethod(testArraySupplier, newInstance(supplierTestsConstructor));
+
+        if (BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS.size() < 5) {
+            throw new AssertionFailedError("buildIntegerArray(int, int, int) has not been called at least five times",
+                "at least 5",
+                BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS.size());
+        }
+        BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS.forEach(arguments ->
+            buildIntegerArrayInvocationPredicates.replaceAll((pair, boolVal) -> boolVal || pair.getFirst().test(arguments)));
+        buildIntegerArrayInvocationPredicates.forEach((pair, bool) -> assertTrue(bool, pair.getSecond()));
     }
 
     /**
      * Tests for {@link SupplierTests#testCollectionSupplier()}.
+     * Needs to have bytecode transformations done in order to work.
+     *
+     * @see h11.utils.transform.SupplierTestVisitors.CollectionSupplierMethodVisitor
      */
     @Test
     @TestID(5)
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("5 | testCollectionSupplier()")
     public void metaTest_testCollectionSupplier() {
+        Map<Pair<Predicate<Integer[]>, String>, Boolean> buildIntegerListInvocationPredicates = Stream
+            .<Pair<Predicate<Integer[]>, String>>of(
+                new Pair<>(arguments -> arguments[0] == 0,
+                    "buildIntegerList(int, int, int) was not called with length == 0 at least once"),
+                new Pair<>(arguments -> arguments[0] == 1,
+                    "buildIntegerList(int, int, int) was not called with length == 1 at least once"),
+                new Pair<>(arguments -> arguments[0] >= 100 && arguments[1] == arguments[2],
+                    "buildIntegerList(int, int, int) was not called with length >= 100 and min == max at least once"),
+                new Pair<>(arguments -> arguments[0] >= 100 && arguments[1] + 11 == arguments[2],
+                    "buildIntegerList(int, int, int) was not called with length >= 100 and min + 11 == max at least once"),
+                new Pair<>(arguments -> arguments[0] >= 100 && Math.abs(arguments[2] - arguments[1]) >= 10 * arguments[0],
+                    "buildIntegerList(int, int, int) was not called with length >= 100 and "
+                        + "max - min >= 10 * length at least once")
+            )
+            .collect(Collectors.toMap(pair -> pair, pair -> false));
 
+        BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS.clear();
+        invokeMethod(testCollectionSupplier, newInstance(supplierTestsConstructor));
+
+        if (BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS.size() < 5) {
+            throw new AssertionFailedError("buildIntegerList(int, int, int) has not been called at least five times",
+                "at least 5",
+                BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS.size());
+        }
+        BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS.forEach(arguments ->
+            buildIntegerListInvocationPredicates.replaceAll((pair, boolVal) -> boolVal || pair.getFirst().test(arguments)));
+        buildIntegerListInvocationPredicates.forEach((pair, bool) -> assertTrue(bool, pair.getSecond()));
     }
 
     /**
      * Tests for {@link SupplierTests#testCyclicRangeSupplier()}.
+     * Needs to have bytecode transformations done in order to work.
+     *
+     * @see h11.utils.transform.SupplierTestVisitors.CyclicRangeSupplierMethodVisitor
      */
     @Test
     @TestID(6)
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("6 | testCyclicRangeSupplier()")
     public void metaTest_testCyclicRangeSupplier() {
+        CYCLIC_RANGE_SUPPLIER_CONSTRUCTOR_INTERCEPTED_ARGUMENTS.clear();
+        invokeMethod(testCyclicRangeSupplier, newInstance(supplierTestsConstructor));
 
+        boolean b = CYCLIC_RANGE_SUPPLIER_CONSTRUCTOR_INTERCEPTED_ARGUMENTS
+            .stream()
+            .anyMatch(arguments -> CYCLIC_RANGE_SUPPLIER_GET_CALLS >= (Math.abs(arguments[1] - arguments[0]) + 1) * 3);
+        if (!b) {
+            throw new AssertionFailedError("CyclicRangeSupplier.get() was not invoked at least (|last - first| + 1) * 3 times");
+        }
     }
-
-    // TODO: implement tests for testArraySupplier, testCollectionSupplier and testCyclicRangeSupplier
 
     @Override
     public void check(int testID) {
@@ -253,5 +335,32 @@ public class SupplierMetaTests extends AbstractTestClass implements PreInvocatio
                 ((1 / 3) << 5 & 67 | -4 ^ 0b10 >> 4 / 3 * 2 % (-'☕' << "(͡° ͜ʖ ͡°)".chars().sum() >>> (0xb7c2))) == -4
             );
         }
+    }
+
+    /**
+     * Interceptor method that is called before {@link SupplierTests#buildIntegerArray(int, int, int)}
+     * and logs passed arguments to {@link #BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS}.
+     */
+    @SuppressWarnings("unused")
+    public static void interceptBuildIntegerArray(int i1, int i2, int i3) {
+        BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS.add(new Integer[] {i1, i2, i3});
+    }
+
+    /**
+     * Interceptor method that is called before {@link SupplierTests#buildIntegerList(int, int, int)}
+     * and logs passed arguments to {@link #BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS}.
+     */
+    @SuppressWarnings("unused")
+    public static void interceptBuildIntegerList(int i1, int i2, int i3) {
+        BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS.add(new Integer[] {i1, i2, i3});
+    }
+
+    /**
+     * Interceptor method that is called before {@link CyclicRangeSupplier#CyclicRangeSupplier(int, int)}
+     * and logs passed arguments to {@link #CYCLIC_RANGE_SUPPLIER_CONSTRUCTOR_INTERCEPTED_ARGUMENTS}.
+     */
+    @SuppressWarnings("unused")
+    public static void interceptCyclicRangeSupplierConstructor(int i1, int i2) {
+        CYCLIC_RANGE_SUPPLIER_CONSTRUCTOR_INTERCEPTED_ARGUMENTS.add(new Integer[] {i1, i2});
     }
 }

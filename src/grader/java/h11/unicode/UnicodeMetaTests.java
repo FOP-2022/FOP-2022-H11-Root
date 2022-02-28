@@ -8,19 +8,16 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.MockedConstruction;
-import org.mockito.Mockito;
-import org.opentest4j.TestAbortedException;
+import org.opentest4j.AssertionFailedError;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static h11.utils.Assertions.assertAnnotations;
 import static h11.utils.Assertions.assertClassExists;
@@ -41,6 +38,11 @@ public class UnicodeMetaTests extends AbstractTestClass implements PreInvocation
     private static Constructor<?> unicodeTestsConstructor = null;
     private static Method testCharFromUnicode = null;
     private static Method testCharFromUnicodeCasesExchanged = null;
+
+    public final static Map<String, List<Integer>> CONSTRUCTOR_INVOCATION_ARGS = Map.of(
+        "h11/unicode/CharFromUnicode", new ArrayList<>(),
+        "h11/unicode/CharFromUnicodeCasesExchanged", new ArrayList<>()
+    );
 
     /**
      * Creates a new {@link UnicodeMetaTests} object.
@@ -87,35 +89,29 @@ public class UnicodeMetaTests extends AbstractTestClass implements PreInvocation
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("2 | testCharFromUnicode()")
     public void metaTest_testCharFromUnicode() {
-        Map<Predicate<Integer>, Boolean> invocationCheckList = Stream.<Predicate<Integer>>of(
-                i -> isInCharacterRange(i) && Character.isLowerCase((char) (int) i),
-                i -> isInCharacterRange(i) && Character.isUpperCase((char) (int) i),
-                i -> isInCharacterRange(i) && !Character.isLowerCase((char) (int) i) && !Character.isUpperCase((char) (int) i),
-                i -> i < 0,
-                i -> i > Character.MAX_CODE_POINT
-            )
-            .collect(Collectors.toMap(pred -> pred, pred -> false));
+        Map<Predicate<Integer>, String> invocationCheckList = Map.of(
+            i -> isInCharacterRange(i) && Character.isLowerCase((char) (int) i),
+            "CharFromUnicode.apply(Integer) was not tested with the code point of a lowercase character",
+            i -> isInCharacterRange(i) && Character.isUpperCase((char) (int) i),
+            "CharFromUnicode.apply(Integer) was not tested with the code point of a uppercase character",
+            i -> isInCharacterRange(i) && !Character.isLowerCase((char) (int) i) && !Character.isUpperCase((char) (int) i),
+            "CharFromUnicode.apply(Integer) was not tested with the code point of a character "
+                + "that is neither a lowercase nor an uppercase letter",
+            i -> i < 0,
+            "CharFromUnicode.apply(Integer) was not tested with a negative integer",
+            i -> i > Character.MAX_CODE_POINT,
+            "CharFromUnicode.apply(Integer) was not tested with an integer bigger than the maximum code point"
+        );
 
-        Class<?> charFromUnicodeClass = getCharFromUnicodeClass();
-        Method apply = getApplyMethod(charFromUnicodeClass);
-        MockedConstruction<?> construction = Mockito.mockConstructionWithAnswer(charFromUnicodeClass, invocation -> {
-            if (invocation.getMethod().equals(apply)) {
-                for (Predicate<Integer> predicate : invocationCheckList.keySet()) {
-                    if (predicate.test(invocation.getArgument(0))) {
-                        invocationCheckList.put(predicate, true);
-                    }
-                }
-            }
-
-            return invocation.callRealMethod();
-        });
+        List<Integer> charFromUnicodeApplyArgs = CONSTRUCTOR_INVOCATION_ARGS.get("h11/unicode/CharFromUnicode");
+        charFromUnicodeApplyArgs.clear();
         invokeMethod(testCharFromUnicode, newInstance(unicodeTestsConstructor));
 
-        assertTrue(invocationCheckList.values().stream().allMatch(Boolean::booleanValue),
-            "%s#apply(java.lang.Integer) was not invoked with all required parameters"
-                .formatted(charFromUnicodeClass.getName()));
-
-        construction.closeOnDemand();
+        if (charFromUnicodeApplyArgs.size() < 5) {
+            throw new AssertionFailedError("CharFromUnicode.apply(Integer) was not called at least 5 times",
+                "at least 5 calls", charFromUnicodeApplyArgs.size());
+        }
+        invocationCheckList.forEach((pred, msg) -> assertTrue(charFromUnicodeApplyArgs.stream().anyMatch(pred), msg));
     }
 
     /**
@@ -126,38 +122,30 @@ public class UnicodeMetaTests extends AbstractTestClass implements PreInvocation
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("3 | testCharFromUnicodeCasesExchanged()")
     public void metaTest_testCharFromUnicodeCasesExchanged() {
-        Map<Predicate<Integer>, Boolean> invocationCheckList = Stream.<Predicate<Integer>>of(
-                i -> isInCharacterRange(i) && Character.isLowerCase((char) (int) i),
-                i -> isInCharacterRange(i) && Character.isUpperCase((char) (int) i),
-                i -> isInCharacterRange(i) && !Character.isLowerCase((char) (int) i) && !Character.isUpperCase((char) (int) i),
-                i -> i < 0,
-                i -> i > Character.MAX_CODE_POINT
-            )
-            .collect(Collectors.toMap(pred -> pred, pred -> false));
-
-        Class<?> charFromUnicodeCasesExchangedClass = getCharFromUnicodeCasesExchangedClass();
-        Method apply = getApplyMethod(charFromUnicodeCasesExchangedClass);
-        MockedConstruction<?> construction = Mockito.mockConstructionWithAnswer(
-            charFromUnicodeCasesExchangedClass,
-            invocation -> {
-                if (invocation.getMethod().equals(apply)) {
-                    for (Predicate<Integer> predicate : invocationCheckList.keySet()) {
-                        if (predicate.test(invocation.getArgument(0))) {
-                            invocationCheckList.put(predicate, true);
-                        }
-                    }
-                }
-
-                return invocation.callRealMethod();
-            }
+        Map<Predicate<Integer>, String> invocationCheckList = Map.of(
+            i -> isInCharacterRange(i) && Character.isLowerCase((char) (int) i),
+            "CharFromUnicodeCasesExchanged.apply(Integer) was not tested with the code point of a lowercase character",
+            i -> isInCharacterRange(i) && Character.isUpperCase((char) (int) i),
+            "CharFromUnicodeCasesExchanged.apply(Integer) was not tested with the code point of a uppercase character",
+            i -> isInCharacterRange(i) && !Character.isLowerCase((char) (int) i) && !Character.isUpperCase((char) (int) i),
+            "CharFromUnicodeCasesExchanged.apply(Integer) was not tested with the code point of a character "
+                + "that is neither a lowercase nor an uppercase letter",
+            i -> i < 0,
+            "CharFromUnicodeCasesExchanged.apply(Integer) was not tested with a negative integer",
+            i -> i > Character.MAX_CODE_POINT,
+            "CharFromUnicodeCasesExchanged.apply(Integer) was not tested with an integer bigger than the maximum code point"
         );
+
+        List<Integer> charFromUnicodeCasesExchangedApplyArgs = CONSTRUCTOR_INVOCATION_ARGS
+            .get("h11/unicode/CharFromUnicodeCasesExchanged");
+        charFromUnicodeCasesExchangedApplyArgs.clear();
         invokeMethod(testCharFromUnicodeCasesExchanged, newInstance(unicodeTestsConstructor));
 
-        assertTrue(invocationCheckList.values().stream().allMatch(Boolean::booleanValue),
-            "%s#apply(java.lang.Integer) was not invoked with all required parameters"
-                .formatted(charFromUnicodeCasesExchangedClass.getName()));
-
-        construction.closeOnDemand();
+        if (charFromUnicodeCasesExchangedApplyArgs.size() < 5) {
+            throw new AssertionFailedError("CharFromUnicodeCasesExchanged.apply(Integer) was not called at least 5 times",
+                "at least 5 calls", charFromUnicodeCasesExchangedApplyArgs.size());
+        }
+        invocationCheckList.forEach((pred, msg) -> assertTrue(charFromUnicodeCasesExchangedApplyArgs.stream().anyMatch(pred), msg));
     }
 
     @Override
@@ -180,33 +168,6 @@ public class UnicodeMetaTests extends AbstractTestClass implements PreInvocation
                 ((1 / 3) << 5 & 67 | -4 ^ 0b10 >> 4 / 3 * 2 % (-'☕' << "(͡° ͜ʖ ͡°)".chars().sum() >>> (0xb7c2))) == -4
             );
         }
-    }
-
-    private static Class<?> getCharFromUnicodeClass() {
-        try {
-            return Class.forName("h11.unicode.CharFromUnicode");
-        } catch (ClassNotFoundException e) {
-            throw new TestAbortedException("Class h11.unicode.CharFromUnicode could not be found", e);
-        }
-    }
-
-    private static Class<?> getCharFromUnicodeCasesExchangedClass() {
-        try {
-            return Class.forName("h11.unicode.CharFromUnicodeCasesExchanged");
-        } catch (ClassNotFoundException e) {
-            throw new TestAbortedException("Class h11.unicode.CharFromUnicodeCasesExchanged could not be found", e);
-        }
-    }
-
-    private static Method getApplyMethod(Class<?> clazz) {
-        return Stream
-            .concat(Arrays.stream(clazz.getMethods()), Arrays.stream(clazz.getDeclaredMethods()))
-            .filter(method -> method.getName().equals("apply")
-                && method.getReturnType().equals(Character.class)
-                && method.getParameterTypes().length == 1
-                && method.getParameterTypes()[0].equals(Integer.class))
-            .findFirst()
-            .orElseThrow();
     }
 
     private static boolean isInCharacterRange(int i) {
