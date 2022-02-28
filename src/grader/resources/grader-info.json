@@ -7,13 +7,44 @@
     {
       "name": "grader",
       "files": [
-        "grader_files_here"
+        "h11/merge/StreamMergerMetaTests.java",
+        "h11/merge/StreamMergerTests.java",
+        "h11/supplier/ArraySupplierTests.java",
+        "h11/supplier/CollectionSupplierTests.java",
+        "h11/supplier/CyclicRangeSupplierTests.java",
+        "h11/supplier/SupplierMetaTests.java",
+        "h11/unicode/CharFromUnicodeCasesExchangedTests.java",
+        "h11/unicode/CharFromUnicodeTests.java",
+        "h11/unicode/CharWithIndexTests.java",
+        "h11/unicode/FormatExceptionTests.java",
+        "h11/unicode/UnicodeMetaTests.java",
+        "h11/utils/transform/BytecodeTransformer.java",
+        "h11/utils/transform/BytecodeUtils.java",
+        "h11/utils/transform/CollectionSupplierVisitor.java",
+        "h11/utils/transform/StreamMergerVisitor.java",
+        "h11/utils/transform/SupplierTestVisitors.java",
+        "h11/utils/transform/UnicodeVisitors.java",
+        "h11/utils/AbstractTestClass.java",
+        "h11/utils/Assertions.java",
+        "h11/utils/PreInvocationCheck.java",
+        "h11/utils/TestID.java",
+        "h11/H11RubricProvider.java"
       ]
     },
     {
       "name": "solution",
       "files": [
-        "solution_files_here"
+        "h11/merge/StreamMerger.java",
+        "h11/merge/StreamMergerTest.java",
+        "h11/supplier/ArraySupplier.java",
+        "h11/supplier/CollectionSupplier.java",
+        "h11/supplier/CyclicRangeSupplier.java",
+        "h11/supplier/SupplierTests.java",
+        "h11/unicode/CharFromUnicode.java",
+        "h11/unicode/CharFromUnicodeCasesExchanged.java",
+        "h11/unicode/CharWithIndex.java",
+        "h11/unicode/FormatException.java",
+        "h11/unicode/UnicodeTests.java"
       ]
     }
   ]
