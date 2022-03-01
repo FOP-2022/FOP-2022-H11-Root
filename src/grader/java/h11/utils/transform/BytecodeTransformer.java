@@ -7,6 +7,9 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.sourcegrade.jagr.api.testing.ClassTransformer;
 
+/**
+ * Applies bytecode transformations for some tests.
+ */
 public class BytecodeTransformer implements ClassTransformer {
 
     @Override

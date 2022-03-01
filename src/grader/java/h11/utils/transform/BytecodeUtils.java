@@ -8,15 +8,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class BytecodeUtils {
+final class BytecodeUtils {
 
     private BytecodeUtils() {}
 
-    public static int store(MethodVisitor visitor, List<Type> types, int start) {
+    static int store(MethodVisitor visitor, List<Type> types, int start) {
         types = new ArrayList<>(types);
         Collections.reverse(types);
         for (Type type : types) {
-            if (type == Type.BOOLEAN_TYPE || type == Type.BYTE_TYPE || type == Type.CHAR_TYPE || type == Type.SHORT_TYPE || type == Type.INT_TYPE) {
+            if (type == Type.BOOLEAN_TYPE
+                || type == Type.BYTE_TYPE
+                || type == Type.CHAR_TYPE
+                || type == Type.SHORT_TYPE
+                || type == Type.INT_TYPE
+            ) {
                 visitor.visitVarInsn(Opcodes.ISTORE, start++);
             } else if (type == Type.LONG_TYPE) {
                 visitor.visitVarInsn(Opcodes.LSTORE, start++);
@@ -33,9 +38,14 @@ public final class BytecodeUtils {
         return start - 1;
     }
 
-    public static int load(MethodVisitor visitor, List<Type> types, int start) {
+    static int load(MethodVisitor visitor, List<Type> types, int start) {
         for (Type type : types) {
-            if (type == Type.BOOLEAN_TYPE || type == Type.BYTE_TYPE || type == Type.CHAR_TYPE || type == Type.SHORT_TYPE || type == Type.INT_TYPE) {
+            if (type == Type.BOOLEAN_TYPE
+                || type == Type.BYTE_TYPE
+                || type == Type.CHAR_TYPE
+                || type == Type.SHORT_TYPE
+                || type == Type.INT_TYPE
+            ) {
                 visitor.visitVarInsn(Opcodes.ILOAD, start--);
             } else if (type == Type.LONG_TYPE) {
                 visitor.visitVarInsn(Opcodes.LLOAD, start--);

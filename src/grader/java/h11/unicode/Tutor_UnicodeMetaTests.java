@@ -39,7 +39,7 @@ public class Tutor_UnicodeMetaTests extends AbstractTestClass implements PreInvo
     private static Method testCharFromUnicode = null;
     private static Method testCharFromUnicodeCasesExchanged = null;
 
-    public final static Map<String, List<Integer>> CONSTRUCTOR_INVOCATION_ARGS = Map.of(
+    public static final Map<String, List<Integer>> CONSTRUCTOR_INVOCATION_ARGS = Map.of(
         "h11/unicode/CharFromUnicode", new ArrayList<>(),
         "h11/unicode/CharFromUnicodeCasesExchanged", new ArrayList<>()
     );
@@ -89,6 +89,14 @@ public class Tutor_UnicodeMetaTests extends AbstractTestClass implements PreInvo
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("2 | testCharFromUnicode()")
     public void metaTest_testCharFromUnicode() {
+        List<Integer> charFromUnicodeApplyArgs = CONSTRUCTOR_INVOCATION_ARGS.get("h11/unicode/CharFromUnicode");
+        charFromUnicodeApplyArgs.clear();
+        invokeMethod(testCharFromUnicode, newInstance(unicodeTestsConstructor));
+
+        if (charFromUnicodeApplyArgs.size() < 5) {
+            throw new AssertionFailedError("CharFromUnicode.apply(Integer) was not called at least 5 times",
+                "at least 5 calls", charFromUnicodeApplyArgs.size());
+        }
         Map<Predicate<Integer>, String> invocationCheckList = Map.of(
             i -> isInCharacterRange(i) && Character.isLowerCase((char) (int) i),
             "CharFromUnicode.apply(Integer) was not tested with the code point of a lowercase character",
@@ -102,15 +110,6 @@ public class Tutor_UnicodeMetaTests extends AbstractTestClass implements PreInvo
             i -> i > Character.MAX_CODE_POINT,
             "CharFromUnicode.apply(Integer) was not tested with an integer bigger than the maximum code point"
         );
-
-        List<Integer> charFromUnicodeApplyArgs = CONSTRUCTOR_INVOCATION_ARGS.get("h11/unicode/CharFromUnicode");
-        charFromUnicodeApplyArgs.clear();
-        invokeMethod(testCharFromUnicode, newInstance(unicodeTestsConstructor));
-
-        if (charFromUnicodeApplyArgs.size() < 5) {
-            throw new AssertionFailedError("CharFromUnicode.apply(Integer) was not called at least 5 times",
-                "at least 5 calls", charFromUnicodeApplyArgs.size());
-        }
         invocationCheckList.forEach((pred, msg) -> assertTrue(charFromUnicodeApplyArgs.stream().anyMatch(pred), msg));
     }
 
@@ -122,6 +121,15 @@ public class Tutor_UnicodeMetaTests extends AbstractTestClass implements PreInvo
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("3 | testCharFromUnicodeCasesExchanged()")
     public void metaTest_testCharFromUnicodeCasesExchanged() {
+        List<Integer> charFromUnicodeCasesExchangedApplyArgs = CONSTRUCTOR_INVOCATION_ARGS
+            .get("h11/unicode/CharFromUnicodeCasesExchanged");
+        charFromUnicodeCasesExchangedApplyArgs.clear();
+        invokeMethod(testCharFromUnicodeCasesExchanged, newInstance(unicodeTestsConstructor));
+
+        if (charFromUnicodeCasesExchangedApplyArgs.size() < 5) {
+            throw new AssertionFailedError("CharFromUnicodeCasesExchanged.apply(Integer) was not called at least 5 times",
+                "at least 5 calls", charFromUnicodeCasesExchangedApplyArgs.size());
+        }
         Map<Predicate<Integer>, String> invocationCheckList = Map.of(
             i -> isInCharacterRange(i) && Character.isLowerCase((char) (int) i),
             "CharFromUnicodeCasesExchanged.apply(Integer) was not tested with the code point of a lowercase character",
@@ -135,17 +143,8 @@ public class Tutor_UnicodeMetaTests extends AbstractTestClass implements PreInvo
             i -> i > Character.MAX_CODE_POINT,
             "CharFromUnicodeCasesExchanged.apply(Integer) was not tested with an integer bigger than the maximum code point"
         );
-
-        List<Integer> charFromUnicodeCasesExchangedApplyArgs = CONSTRUCTOR_INVOCATION_ARGS
-            .get("h11/unicode/CharFromUnicodeCasesExchanged");
-        charFromUnicodeCasesExchangedApplyArgs.clear();
-        invokeMethod(testCharFromUnicodeCasesExchanged, newInstance(unicodeTestsConstructor));
-
-        if (charFromUnicodeCasesExchangedApplyArgs.size() < 5) {
-            throw new AssertionFailedError("CharFromUnicodeCasesExchanged.apply(Integer) was not called at least 5 times",
-                "at least 5 calls", charFromUnicodeCasesExchangedApplyArgs.size());
-        }
-        invocationCheckList.forEach((pred, msg) -> assertTrue(charFromUnicodeCasesExchangedApplyArgs.stream().anyMatch(pred), msg));
+        invocationCheckList.forEach((pred, msg) ->
+            assertTrue(charFromUnicodeCasesExchangedApplyArgs.stream().anyMatch(pred), msg));
     }
 
     @Override

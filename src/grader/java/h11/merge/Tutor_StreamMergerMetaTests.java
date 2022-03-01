@@ -39,7 +39,7 @@ public class Tutor_StreamMergerMetaTests extends AbstractTestClass implements Pr
      * Map that is updated via bytecode transformations of {@link StreamMergerTest#testMerge()}
      * and holds information on whether required methods were invoked.
      */
-    public final static Map<String, Boolean> INVOKED_REQUIRED_METHODS = Stream
+    public static final Map<String, Boolean> INVOKED_REQUIRED_METHODS = Stream
         .of("of", "generate", "range")
         .collect(Collectors.toMap(s -> s, s -> false));
 

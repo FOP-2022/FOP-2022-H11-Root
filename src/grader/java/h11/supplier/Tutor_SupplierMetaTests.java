@@ -50,9 +50,9 @@ public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInv
     private static Method buildIntegerArray = null;
     private static Method buildIntegerList = null;
 
-    private final static List<Integer[]> BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS = new ArrayList<>();
-    private final static List<Integer[]> BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS = new ArrayList<>();
-    private final static List<Integer[]> CYCLIC_RANGE_SUPPLIER_CONSTRUCTOR_INTERCEPTED_ARGUMENTS = new ArrayList<>();
+    private static final List<Integer[]> BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS = new ArrayList<>();
+    private static final List<Integer[]> BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS = new ArrayList<>();
+    private static final List<Integer[]> CYCLIC_RANGE_SUPPLIER_CONSTRUCTOR_INTERCEPTED_ARGUMENTS = new ArrayList<>();
     /**
      * Updated via bytecode transformation whenever {@link CyclicRangeSupplier#get()}
      * is invoked in {@link SupplierTests#testCyclicRangeSupplier()}.
@@ -213,6 +213,14 @@ public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInv
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("4 | testArraySupplier()")
     public void metaTest_testArraySupplier() {
+        BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS.clear();
+        invokeMethod(testArraySupplier, newInstance(supplierTestsConstructor));
+
+        if (BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS.size() < 5) {
+            throw new AssertionFailedError("buildIntegerArray(int, int, int) has not been called at least five times",
+                "at least 5",
+                BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS.size());
+        }
         Map<Pair<Predicate<Integer[]>, String>, Boolean> buildIntegerArrayInvocationPredicates = Stream
             .<Pair<Predicate<Integer[]>, String>>of(
                 new Pair<>(arguments -> arguments[0] == 0,
@@ -227,15 +235,6 @@ public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInv
                     "buildIntegerArray(int, int, int) was not called with length >= 100 and offset > 1 at least once")
             )
             .collect(Collectors.toMap(pair -> pair, pair -> false));
-
-        BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS.clear();
-        invokeMethod(testArraySupplier, newInstance(supplierTestsConstructor));
-
-        if (BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS.size() < 5) {
-            throw new AssertionFailedError("buildIntegerArray(int, int, int) has not been called at least five times",
-                "at least 5",
-                BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS.size());
-        }
         BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS.forEach(arguments ->
             buildIntegerArrayInvocationPredicates.replaceAll((pair, boolVal) -> boolVal || pair.getFirst().test(arguments)));
         buildIntegerArrayInvocationPredicates.forEach((pair, bool) -> assertTrue(bool, pair.getSecond()));
@@ -252,6 +251,14 @@ public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInv
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("5 | testCollectionSupplier()")
     public void metaTest_testCollectionSupplier() {
+        BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS.clear();
+        invokeMethod(testCollectionSupplier, newInstance(supplierTestsConstructor));
+
+        if (BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS.size() < 5) {
+            throw new AssertionFailedError("buildIntegerList(int, int, int) has not been called at least five times",
+                "at least 5",
+                BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS.size());
+        }
         Map<Pair<Predicate<Integer[]>, String>, Boolean> buildIntegerListInvocationPredicates = Stream
             .<Pair<Predicate<Integer[]>, String>>of(
                 new Pair<>(arguments -> arguments[0] == 0,
@@ -267,15 +274,6 @@ public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInv
                         + "max - min >= 10 * length at least once")
             )
             .collect(Collectors.toMap(pair -> pair, pair -> false));
-
-        BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS.clear();
-        invokeMethod(testCollectionSupplier, newInstance(supplierTestsConstructor));
-
-        if (BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS.size() < 5) {
-            throw new AssertionFailedError("buildIntegerList(int, int, int) has not been called at least five times",
-                "at least 5",
-                BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS.size());
-        }
         BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS.forEach(arguments ->
             buildIntegerListInvocationPredicates.replaceAll((pair, boolVal) -> boolVal || pair.getFirst().test(arguments)));
         buildIntegerListInvocationPredicates.forEach((pair, bool) -> assertTrue(bool, pair.getSecond()));

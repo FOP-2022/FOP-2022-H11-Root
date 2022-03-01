@@ -18,7 +18,8 @@ class StreamMergerVisitor extends MethodVisitor {
             && ((owner.equals("java/util/stream/Stream") && name.equals("of"))
                 || (owner.equals("java/util/stream/Stream") && name.equals("generate"))
                 || (owner.equals("java/util/stream/IntStream") && name.equals("range"))
-        )) {
+            )
+        ) {
             super.visitFieldInsn(Opcodes.GETSTATIC,
                 "h11/merge/Tutor_StreamMergerMetaTests",
                 "INVOKED_REQUIRED_METHODS",
