@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @SuppressWarnings("JavadocReference")
 @TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class SupplierMetaTests extends AbstractTestClass implements PreInvocationCheck {
+public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInvocationCheck {
 
     private static Class<?> supplierTestsClass = null;
     private static Constructor<?> supplierTestsConstructor = null;
@@ -60,9 +60,9 @@ public class SupplierMetaTests extends AbstractTestClass implements PreInvocatio
     @SuppressWarnings("FieldMayBeFinal") public static int CYCLIC_RANGE_SUPPLIER_GET_CALLS = 0;
 
     /**
-     * Creates a new {@link SupplierMetaTests} object.
+     * Creates a new {@link Tutor_SupplierMetaTests} object.
      */
-    public SupplierMetaTests() {
+    public Tutor_SupplierMetaTests() {
         super("h11.supplier.SupplierTests");
     }
 

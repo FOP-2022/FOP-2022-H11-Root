@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @SuppressWarnings("JavadocReference")
 @TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class CharFromUnicodeCasesExchangedTests extends AbstractTestClass {
+public class Tutor_CharFromUnicodeCasesExchangedTests extends AbstractTestClass {
 
     private static Class<?> charFromUnicodeCasesExchangedClass = null;
     private static Constructor<?> charFromUnicodeCasesExchangedConstructor = null;
@@ -40,9 +40,9 @@ public class CharFromUnicodeCasesExchangedTests extends AbstractTestClass {
     public static boolean ILLEGAL_INSTRUCTION_USED = false;
 
     /**
-     * Creates a new {@link CharFromUnicodeCasesExchangedTests} object.
+     * Creates a new {@link Tutor_CharFromUnicodeCasesExchangedTests} object.
      */
-    public CharFromUnicodeCasesExchangedTests() {
+    public Tutor_CharFromUnicodeCasesExchangedTests() {
         super("h11.unicode.CharFromUnicodeCasesExchanged");
     }
 
@@ -84,7 +84,7 @@ public class CharFromUnicodeCasesExchangedTests extends AbstractTestClass {
         assumeTrue(apply != null,
             "Method %s#apply(java.lang.Integer) could not be found".formatted(className));
 
-        Class<?> formatExceptionClass = FormatExceptionTests.getFormatExceptionClass();
+        Class<?> formatExceptionClass = Tutor_FormatExceptionTests.getFormatExceptionClass();
         Object instance = newInstance(charFromUnicodeCasesExchangedConstructor);
         boolean exceptionThrown1 = false;
         boolean exceptionThrown2 = false;

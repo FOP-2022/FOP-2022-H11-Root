@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  */
 @TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class StreamMergerMetaTests extends AbstractTestClass implements PreInvocationCheck {
+public class Tutor_StreamMergerMetaTests extends AbstractTestClass implements PreInvocationCheck {
 
     private static Class<?> streamMergerTestClass = null;
     private static Constructor<?> streamMergerTestConstructor = null;
@@ -44,9 +44,9 @@ public class StreamMergerMetaTests extends AbstractTestClass implements PreInvoc
         .collect(Collectors.toMap(s -> s, s -> false));
 
     /**
-     * Creates a new {@link StreamMergerMetaTests} object.
+     * Creates a new {@link Tutor_StreamMergerMetaTests} object.
      */
-    public StreamMergerMetaTests() {
+    public Tutor_StreamMergerMetaTests() {
         super("h11.merge.StreamMergerTest");
     }
 

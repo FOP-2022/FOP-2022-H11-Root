@@ -56,7 +56,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @SuppressWarnings({"JavadocReference", "unchecked"})
 @TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class StreamMergerTests extends AbstractTestClass implements PreInvocationCheck {
+public class Tutor_StreamMergerTests extends AbstractTestClass implements PreInvocationCheck {
 
     private static Class<?> streamMergerClass = null;
     private static Field predicate = null;
@@ -67,9 +67,9 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
     private static Method merge = null;
 
     /**
-     * Creates a new {@link StreamMergerTests} object.
+     * Creates a new {@link Tutor_StreamMergerTests} object.
      */
-    public StreamMergerTests() {
+    public Tutor_StreamMergerTests() {
         super("h11.merge.StreamMerger");
     }
 

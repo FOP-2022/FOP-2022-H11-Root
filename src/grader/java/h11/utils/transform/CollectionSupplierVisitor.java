@@ -20,7 +20,7 @@ class CollectionSupplierVisitor extends MethodVisitor {
         ) {
             super.visitInsn(Opcodes.ICONST_1);
             super.visitFieldInsn(Opcodes.PUTSTATIC,
-                "h11/supplier/CollectionSupplierTests",
+                "h11/supplier/Tutor_CollectionSupplierTests",
                 "ILLEGAL_INSTRUCTION_USED",
                 "Z");
         }

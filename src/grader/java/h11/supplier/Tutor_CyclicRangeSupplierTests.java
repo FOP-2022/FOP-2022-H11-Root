@@ -31,16 +31,16 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  */
 @TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class CyclicRangeSupplierTests extends AbstractTestClass {
+public class Tutor_CyclicRangeSupplierTests extends AbstractTestClass {
 
     private static Class<?> cyclicRangeSupplierClass = null;
     private static Constructor<?> cyclicRangeSupplierConstructor = null;
     private static Method get = null;
 
     /**
-     * Creates a new {@link CyclicRangeSupplierTests} object.
+     * Creates a new {@link Tutor_CyclicRangeSupplierTests} object.
      */
-    public CyclicRangeSupplierTests() {
+    public Tutor_CyclicRangeSupplierTests() {
         super("h11.supplier.CyclicRangeSupplier");
     }
 

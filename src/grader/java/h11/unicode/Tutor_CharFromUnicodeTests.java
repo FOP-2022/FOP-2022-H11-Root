@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @SuppressWarnings("JavadocReference")
 @TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class CharFromUnicodeTests extends AbstractTestClass {
+public class Tutor_CharFromUnicodeTests extends AbstractTestClass {
 
     private static Class<?> charFromUnicodeClass = null;
     private static Constructor<?> charFromUnicodeConstructor = null;
@@ -40,9 +40,9 @@ public class CharFromUnicodeTests extends AbstractTestClass {
     public static boolean ILLEGAL_INSTRUCTION_USED = false;
 
     /**
-     * Creates a new {@link CharFromUnicodeTests} object.
+     * Creates a new {@link Tutor_CharFromUnicodeTests} object.
      */
-    public CharFromUnicodeTests() {
+    public Tutor_CharFromUnicodeTests() {
         super("h11.unicode.CharFromUnicode");
     }
 
@@ -84,7 +84,7 @@ public class CharFromUnicodeTests extends AbstractTestClass {
         assumeTrue(apply != null,
             "Method %s#apply(java.lang.Integer) could not be found".formatted(className));
 
-        Class<?> formatExceptionClass = FormatExceptionTests.getFormatExceptionClass();
+        Class<?> formatExceptionClass = Tutor_FormatExceptionTests.getFormatExceptionClass();
         Object instance = newInstance(charFromUnicodeConstructor);
         boolean exceptionThrown1 = false;
         boolean exceptionThrown2 = false;

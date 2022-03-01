@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  */
 @TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class UnicodeMetaTests extends AbstractTestClass implements PreInvocationCheck {
+public class Tutor_UnicodeMetaTests extends AbstractTestClass implements PreInvocationCheck {
 
     private static Class<?> unicodeTestsClass = null;
     private static Constructor<?> unicodeTestsConstructor = null;
@@ -45,9 +45,9 @@ public class UnicodeMetaTests extends AbstractTestClass implements PreInvocation
     );
 
     /**
-     * Creates a new {@link UnicodeMetaTests} object.
+     * Creates a new {@link Tutor_UnicodeMetaTests} object.
      */
-    public UnicodeMetaTests() {
+    public Tutor_UnicodeMetaTests() {
         super("h11.unicode.UnicodeTests");
     }
 

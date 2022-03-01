@@ -20,7 +20,7 @@ class StreamMergerVisitor extends MethodVisitor {
                 || (owner.equals("java/util/stream/IntStream") && name.equals("range"))
         )) {
             super.visitFieldInsn(Opcodes.GETSTATIC,
-                "h11/merge/StreamMergerMetaTests",
+                "h11/merge/Tutor_StreamMergerMetaTests",
                 "INVOKED_REQUIRED_METHODS",
                 "Ljava/util/Map;");
             super.visitLdcInsn(name);

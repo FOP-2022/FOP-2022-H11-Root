@@ -34,7 +34,7 @@ class UnicodeVisitors extends MethodVisitor {
         ) {
             super.visitInsn(Opcodes.DUP);
             super.visitFieldInsn(Opcodes.GETSTATIC,
-                "h11/unicode/UnicodeMetaTests",
+                "h11/unicode/Tutor_UnicodeMetaTests",
                 "CONSTRUCTOR_INVOCATION_ARGS",
                 "Ljava/util/Map;");
             super.visitLdcInsn(owner);

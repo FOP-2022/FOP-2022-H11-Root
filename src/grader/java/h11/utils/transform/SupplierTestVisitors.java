@@ -40,7 +40,7 @@ class SupplierTestVisitors {
                 int n = BytecodeUtils.store(this, types, maxVar);
                 BytecodeUtils.load(this, types, n);
                 super.visitMethodInsn(Opcodes.INVOKESTATIC,
-                    "h11/supplier/SupplierMetaTests",
+                    "h11/supplier/Tutor_SupplierMetaTests",
                     "interceptBuildIntegerArray",
                     "(III)V",
                     false);
@@ -82,7 +82,7 @@ class SupplierTestVisitors {
                 int n = BytecodeUtils.store(this, types, maxVar);
                 BytecodeUtils.load(this, types, n);
                 super.visitMethodInsn(Opcodes.INVOKESTATIC,
-                    "h11/supplier/SupplierMetaTests",
+                    "h11/supplier/Tutor_SupplierMetaTests",
                     "interceptBuildIntegerList",
                     "(III)V",
                     false);
@@ -121,13 +121,13 @@ class SupplierTestVisitors {
                     && descriptor.equals("()Ljava/lang/Integer;")
             ) {
                 super.visitFieldInsn(Opcodes.GETSTATIC,
-                    "h11/supplier/SupplierMetaTests",
+                    "h11/supplier/Tutor_SupplierMetaTests",
                     "CYCLIC_RANGE_SUPPLIER_GET_CALLS",
                     "I");
                 super.visitInsn(Opcodes.ICONST_1);
                 super.visitInsn(Opcodes.IADD);
                 super.visitFieldInsn(Opcodes.PUTSTATIC,
-                    "h11/supplier/SupplierMetaTests",
+                    "h11/supplier/Tutor_SupplierMetaTests",
                     "CYCLIC_RANGE_SUPPLIER_GET_CALLS",
                     "I");
             } else if (
@@ -139,13 +139,13 @@ class SupplierTestVisitors {
                 List<Type> types = List.of(Type.getArgumentTypes(descriptor));
                 super.visitInsn(Opcodes.ICONST_0);
                 super.visitFieldInsn(Opcodes.PUTSTATIC,
-                    "h11/supplier/SupplierMetaTests",
+                    "h11/supplier/Tutor_SupplierMetaTests",
                     "CYCLIC_RANGE_SUPPLIER_GET_CALLS",
                     "I");
                 int n = BytecodeUtils.store(this, types, maxVar);
                 BytecodeUtils.load(this, types, n);
                 super.visitMethodInsn(Opcodes.INVOKESTATIC,
-                    "h11/supplier/SupplierMetaTests",
+                    "h11/supplier/Tutor_SupplierMetaTests",
                     "interceptCyclicRangeSupplierConstructor",
                     "(II)V",
                     false);

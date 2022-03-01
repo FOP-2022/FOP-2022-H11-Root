@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  */
 @TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class CharWithIndexTests extends AbstractTestClass {
+public class Tutor_CharWithIndexTests extends AbstractTestClass {
 
     private static Class<?> charWithIndexClass = null;
     private static Field theChar = null;
@@ -41,9 +41,9 @@ public class CharWithIndexTests extends AbstractTestClass {
     private static Method getIndex = null;
 
     /**
-     * Creates a new {@link CharWithIndexTests} object.
+     * Creates a new {@link Tutor_CharWithIndexTests} object.
      */
-    public CharWithIndexTests() {
+    public Tutor_CharWithIndexTests() {
         super("h11.unicode.CharWithIndex");
     }
 

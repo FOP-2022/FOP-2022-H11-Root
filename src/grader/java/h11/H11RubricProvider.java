@@ -1,17 +1,14 @@
 package h11;
 
-import h11.merge.StreamMergerMetaTests;
-import h11.merge.StreamMergerTests;
-import h11.supplier.ArraySupplierTests;
-import h11.supplier.CollectionSupplierTests;
-import h11.supplier.CyclicRangeSupplierTests;
-import h11.supplier.SupplierMetaTests;
+import h11.merge.Tutor_StreamMergerMetaTests;
+import h11.merge.Tutor_StreamMergerTests;
+import h11.supplier.Tutor_ArraySupplierTests;
+import h11.supplier.Tutor_CollectionSupplierTests;
+import h11.supplier.Tutor_CyclicRangeSupplierTests;
+import h11.supplier.Tutor_SupplierMetaTests;
+import h11.unicode.*;
 import h11.utils.transform.BytecodeTransformer;
-import h11.unicode.CharFromUnicodeCasesExchangedTests;
-import h11.unicode.CharFromUnicodeTests;
-import h11.unicode.CharWithIndexTests;
-import h11.unicode.FormatExceptionTests;
-import h11.unicode.UnicodeMetaTests;
+import h11.unicode.Tutor_UnicodeMetaTests;
 import org.sourcegrade.jagr.api.rubric.Criterion;
 import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
 import org.sourcegrade.jagr.api.rubric.Rubric;
@@ -30,88 +27,88 @@ import static org.sourcegrade.jagr.api.rubric.JUnitTestRef.ofMethod;
 public class H11RubricProvider implements RubricProvider {
 
     private static final JUnitTestRef H1_1_1_DEFINITION = ofMethod(() ->
-        ArraySupplierTests.class.getMethod("testDefinitions"));
+        Tutor_ArraySupplierTests.class.getMethod("testDefinitions"));
     private static final JUnitTestRef H1_1_1_INSTANCE = ofMethod(() ->
-        ArraySupplierTests.class.getMethod("testInstance"));
+        Tutor_ArraySupplierTests.class.getMethod("testInstance"));
     private static final JUnitTestRef H1_1_2_DEFINITION = ofMethod(() ->
-        CollectionSupplierTests.class.getMethod("testDefinitions"));
+        Tutor_CollectionSupplierTests.class.getMethod("testDefinitions"));
     private static final JUnitTestRef H1_1_2_INSTANCE = ofMethod(() ->
-        CollectionSupplierTests.class.getMethod("testInstance"));
+        Tutor_CollectionSupplierTests.class.getMethod("testInstance"));
     private static final JUnitTestRef H1_1_2_REQUIREMENT = ofMethod(() ->
-        CollectionSupplierTests.class.getMethod("testIllegalInvocations"));
+        Tutor_CollectionSupplierTests.class.getMethod("testIllegalInvocations"));
     private static final JUnitTestRef H1_1_3_DEFINITION = ofMethod(() ->
-        CyclicRangeSupplierTests.class.getMethod("testDefinitions"));
+        Tutor_CyclicRangeSupplierTests.class.getMethod("testDefinitions"));
     private static final JUnitTestRef H1_1_3_INSTANCE = ofMethod(() ->
-        CyclicRangeSupplierTests.class.getMethod("testInstance"));
+        Tutor_CyclicRangeSupplierTests.class.getMethod("testInstance"));
 
     private static final JUnitTestRef H1_2_DEFINITION = ofMethod(() ->
-        SupplierMetaTests.class.getMethod("testDefinitions"));
+        Tutor_SupplierMetaTests.class.getMethod("testDefinitions"));
     private static final JUnitTestRef H1_2_BUILD_INTEGER_ARRAY = ofMethod(() ->
-        SupplierMetaTests.class.getMethod("testBuildIntegerArray"));
+        Tutor_SupplierMetaTests.class.getMethod("testBuildIntegerArray"));
     private static final JUnitTestRef H1_2_BUILD_INTEGER_LIST = ofMethod(() ->
-        SupplierMetaTests.class.getMethod("testBuildIntegerList"));
+        Tutor_SupplierMetaTests.class.getMethod("testBuildIntegerList"));
     private static final JUnitTestRef H1_2_ARRAY_SUPPLIER_TESTS = ofMethod(() ->
-        SupplierMetaTests.class.getMethod("metaTest_testArraySupplier"));
+        Tutor_SupplierMetaTests.class.getMethod("metaTest_testArraySupplier"));
     private static final JUnitTestRef H1_2_COLLECTION_SUPPLIER_TESTS = ofMethod(() ->
-        SupplierMetaTests.class.getMethod("metaTest_testCollectionSupplier"));
+        Tutor_SupplierMetaTests.class.getMethod("metaTest_testCollectionSupplier"));
     private static final JUnitTestRef H1_2_CYCLIC_RANGE_SUPPLIER_TESTS = ofMethod(() ->
-        SupplierMetaTests.class.getMethod("metaTest_testCyclicRangeSupplier"));
+        Tutor_SupplierMetaTests.class.getMethod("metaTest_testCyclicRangeSupplier"));
 
     private static final JUnitTestRef H2_1_DEFINITION = ofMethod(() ->
-        FormatExceptionTests.class.getMethod("testDefinitions"));
+        Tutor_FormatExceptionTests.class.getMethod("testDefinitions"));
     private static final JUnitTestRef H2_1_INSTANCE = ofMethod(() ->
-        FormatExceptionTests.class.getMethod("testInstance"));
+        Tutor_FormatExceptionTests.class.getMethod("testInstance"));
 
     private static final JUnitTestRef H2_2_1_DEFINITION = ofMethod(() ->
-        CharFromUnicodeTests.class.getMethod("testDefinitions"));
+        Tutor_CharFromUnicodeTests.class.getMethod("testDefinitions"));
     private static final JUnitTestRef H2_2_1_APPLY = ofMethod(() ->
-        CharFromUnicodeTests.class.getMethod("testApply"));
+        Tutor_CharFromUnicodeTests.class.getMethod("testApply"));
     private static final JUnitTestRef H2_2_1_REQUIREMENT = ofMethod(() ->
-        CharFromUnicodeTests.class.getMethod("testUnsafeCast"));
+        Tutor_CharFromUnicodeTests.class.getMethod("testUnsafeCast"));
     private static final JUnitTestRef H2_2_2_DEFINITION = ofMethod(() ->
-        CharFromUnicodeCasesExchangedTests.class.getMethod("testDefinitions"));
+        Tutor_CharFromUnicodeCasesExchangedTests.class.getMethod("testDefinitions"));
     private static final JUnitTestRef H2_2_2_APPLY = ofMethod(() ->
-        CharFromUnicodeCasesExchangedTests.class.getMethod("testApply"));
+        Tutor_CharFromUnicodeCasesExchangedTests.class.getMethod("testApply"));
     private static final JUnitTestRef H2_2_2_REQUIREMENT = ofMethod(() ->
-        CharFromUnicodeCasesExchangedTests.class.getMethod("testUnsafeCast"));
+        Tutor_CharFromUnicodeCasesExchangedTests.class.getMethod("testUnsafeCast"));
 
     private static final JUnitTestRef H2_3_DEFINITION = ofMethod(() ->
-        CharWithIndexTests.class.getMethod("testDefinitions"));
+        Tutor_CharWithIndexTests.class.getMethod("testDefinitions"));
     private static final JUnitTestRef H2_3_INSTANCE = ofMethod(() ->
-        CharWithIndexTests.class.getMethod("testInstance"));
+        Tutor_CharWithIndexTests.class.getMethod("testInstance"));
 
     private static final JUnitTestRef H2_4_DEFINITION = ofMethod(() ->
-        UnicodeMetaTests.class.getMethod("testDefinitions"));
+        Tutor_UnicodeMetaTests.class.getMethod("testDefinitions"));
     private static final JUnitTestRef H2_4_META_TESTS = and(
-        ofMethod(() -> UnicodeMetaTests.class.getMethod("metaTest_testCharFromUnicode")),
-        ofMethod(() -> UnicodeMetaTests.class.getMethod("metaTest_testCharFromUnicodeCasesExchanged"))
+        ofMethod(() -> Tutor_UnicodeMetaTests.class.getMethod("metaTest_testCharFromUnicode")),
+        ofMethod(() -> Tutor_UnicodeMetaTests.class.getMethod("metaTest_testCharFromUnicodeCasesExchanged"))
     );
 
     private static final JUnitTestRef H3_1_DEFINITION = ofMethod(() ->
-        StreamMergerTests.class.getMethod("testDefinitions"));
+        Tutor_StreamMergerTests.class.getMethod("testDefinitions"));
     private static final JUnitTestRef H3_1_PREDICATE = ofMethod(() ->
-        StreamMergerTests.class.getMethod("testPredicate"));
+        Tutor_StreamMergerTests.class.getMethod("testPredicate"));
     private static final JUnitTestRef H3_1_COMPARATOR = ofMethod(() ->
-        StreamMergerTests.class.getMethod("testComparator"));
+        Tutor_StreamMergerTests.class.getMethod("testComparator"));
     private static final JUnitTestRef H3_1_FUNCTION = ofMethod(() ->
-        StreamMergerTests.class.getMethod("testFunction"));
+        Tutor_StreamMergerTests.class.getMethod("testFunction"));
     private static final JUnitTestRef H3_1_COLLECTOR_SUPPLIER_FINISHER = ofMethod(() ->
-        StreamMergerTests.class.getMethod("testCollectorSupplierFinisher"));
+        Tutor_StreamMergerTests.class.getMethod("testCollectorSupplierFinisher"));
     private static final JUnitTestRef H3_1_COLLECTOR_ACCUMULATOR = ofMethod(() ->
-        StreamMergerTests.class.getMethod("testAccumulator"));
+        Tutor_StreamMergerTests.class.getMethod("testAccumulator"));
     private static final JUnitTestRef H3_1_COLLECTOR_COMBINER = ofMethod(() ->
-        StreamMergerTests.class.getMethod("testCombiner"));
+        Tutor_StreamMergerTests.class.getMethod("testCombiner"));
     private static final JUnitTestRef H3_1_MERGE = ofMethod(() ->
-        StreamMergerTests.class.getMethod("testMerge"));
+        Tutor_StreamMergerTests.class.getMethod("testMerge"));
 
     private static final JUnitTestRef H3_2_DEFINITION = ofMethod(() ->
-        StreamMergerMetaTests.class.getMethod("testDefinitions"));
+        Tutor_StreamMergerMetaTests.class.getMethod("testDefinitions"));
     private static final JUnitTestRef H3_2_TEST_MERGE_INDEX_0 = ofMethod(() ->
-        StreamMergerMetaTests.class.getMethod("testIndex0Correct"));
+        Tutor_StreamMergerMetaTests.class.getMethod("testIndex0Correct"));
     private static final JUnitTestRef H3_2_TEST_MERGE_INDEX_1 = ofMethod(() ->
-        StreamMergerMetaTests.class.getMethod("testIndex1Correct"));
+        Tutor_StreamMergerMetaTests.class.getMethod("testIndex1Correct"));
     private static final JUnitTestRef H3_2_TEST_MERGE_INDEX_2 = ofMethod(() ->
-        StreamMergerMetaTests.class.getMethod("testIndex2Correct"));
+        Tutor_StreamMergerMetaTests.class.getMethod("testIndex2Correct"));
 
     private static final Criterion H1_1_1_1 = makeCriterionFor(H1_1_1_DEFINITION,
         "Klasse h11.supplier.ArraySupplier und ihre Methoden sind korrekt definiert.");
