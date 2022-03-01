@@ -22,7 +22,6 @@ import static h11.utils.Assertions.assertClassHasMethod;
 import static h11.utils.Assertions.assertClassImplements;
 import static h11.utils.Assertions.assertEquals;
 import static h11.utils.Assertions.assertMethod;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -141,6 +140,6 @@ public class CharFromUnicodeTests extends AbstractTestClass {
     public void testUnsafeCast() {
         ILLEGAL_INSTRUCTION_USED = false;
         invokeMethod(apply, newInstance(charFromUnicodeConstructor), (int) 'a');
-        assertFalse(ILLEGAL_INSTRUCTION_USED, "Unsafe cast to char detected (I2C instruction used)");
+        assertTrue(ILLEGAL_INSTRUCTION_USED, "Unsafe cast to char detected (I2C instruction used)");
     }
 }

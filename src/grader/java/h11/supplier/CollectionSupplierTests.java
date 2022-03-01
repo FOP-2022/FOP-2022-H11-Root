@@ -13,6 +13,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -25,7 +26,7 @@ import static h11.utils.Assertions.assertClassTypeParameters;
 import static h11.utils.Assertions.assertConstructor;
 import static h11.utils.Assertions.assertMethod;
 import static h11.utils.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
@@ -109,6 +110,8 @@ public class CollectionSupplierTests extends AbstractTestClass {
     @Test
     @DisplayName("2-R | No illegal classes / methods requirement")
     public void testIllegalInvocations() {
-        assertFalse(ILLEGAL_INSTRUCTION_USED, "Invocations of illegal classes or methods detected");
+        ILLEGAL_INSTRUCTION_USED = false;
+        invokeMethod(get, newInstance(collectionSupplierConstructor, List.of()));
+        assertTrue(ILLEGAL_INSTRUCTION_USED, "Invocation of illegal class or method detected");
     }
 }

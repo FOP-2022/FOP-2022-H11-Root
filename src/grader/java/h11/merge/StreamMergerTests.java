@@ -307,13 +307,18 @@ public class StreamMergerTests extends AbstractTestClass implements PreInvocatio
     @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("8 | merge(java.util.stream.Stream[])")
     public void testMerge() {
+        assumeTrue(streamMergerClass != null, "Class %s could not be found".formatted(className));
+        assumeTrue(streamMergerConstructor != null,
+            "Constructor for class %s could not be found".formatted(className));
+        assumeTrue(merge != null, "Method %s#merge(java.util.stream.Stream[]) could not be found".formatted(className));
+
         Object instance = newInstance(streamMergerConstructor);
         Class<?> charWithIndexClass = getCharWithIndexClass();
         Integer[][] streamElements = new Integer[][] {
             {0, 1, 2, 3, 4, 5},
             {10, 100, 1000, 10000},
             {1, 2, 4, null, null, 32},
-            {-1, 0, null, 1, (int) Character.MAX_VALUE, Character.MAX_VALUE + 1}
+            {0, null, 1, (int) Character.MAX_VALUE}
         };
 
         Object[] referenceResultArray = StreamMergerSolution.merge(

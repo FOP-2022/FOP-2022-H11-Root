@@ -130,7 +130,7 @@ public class H11RubricProvider implements RubricProvider {
         .maxPoints(0)
         .grader(
             testAwareBuilder()
-                .requirePass(H1_1_2_REQUIREMENT)
+                .requireFail(H1_1_2_REQUIREMENT)
                 .pointsFailedMin()
                 .pointsPassedMax()
                 .build()
@@ -172,7 +172,7 @@ public class H11RubricProvider implements RubricProvider {
         .maxPoints(0)
         .grader(
             testAwareBuilder()
-                .requirePass(H2_2_1_REQUIREMENT)
+                .requireFail(H2_2_1_REQUIREMENT)
                 .pointsFailedMin()
                 .pointsPassedMax()
                 .build()
@@ -189,7 +189,7 @@ public class H11RubricProvider implements RubricProvider {
         .maxPoints(0)
         .grader(
             testAwareBuilder()
-                .requirePass(H2_2_2_REQUIREMENT)
+                .requireFail(H2_2_2_REQUIREMENT)
                 .pointsFailedMin()
                 .pointsPassedMax()
                 .build()

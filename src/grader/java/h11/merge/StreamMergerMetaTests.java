@@ -1,10 +1,13 @@
 package h11.merge;
 
 import h11.utils.AbstractTestClass;
+import h11.utils.PreInvocationCheck;
+import h11.utils.TestID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.Constructor;
@@ -19,13 +22,14 @@ import static h11.utils.Assertions.assertClassExists;
 import static h11.utils.Assertions.assertClassHasConstructor;
 import static h11.utils.Assertions.assertClassHasMethod;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Tests for class {@link StreamMergerTest}.
  */
 @TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class StreamMergerMetaTests extends AbstractTestClass {
+public class StreamMergerMetaTests extends AbstractTestClass implements PreInvocationCheck {
 
     private static Class<?> streamMergerTestClass = null;
     private static Constructor<?> streamMergerTestConstructor = null;
@@ -68,6 +72,8 @@ public class StreamMergerMetaTests extends AbstractTestClass {
      * Test for using {@link java.util.stream.Stream#of(Object[])} in {@link StreamMergerTest#testMerge()}.
      */
     @Test
+    @TestID(2)
+    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("2 | java.util.stream.Stream#of(Object[]) in testMerge()")
     public void testIndex0Correct() {
         INVOKED_REQUIRED_METHODS.replaceAll((key, value) -> false);
@@ -82,6 +88,8 @@ public class StreamMergerMetaTests extends AbstractTestClass {
      * Test for using {@link java.util.stream.Stream#generate(Supplier)} in {@link StreamMergerTest#testMerge()}.
      */
     @Test
+    @TestID(3)
+    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("3 | java.util.stream.Stream#generate(java.util.function.Supplier) in testMerge()")
     public void testIndex1Correct() {
         INVOKED_REQUIRED_METHODS.replaceAll((key, value) -> false);
@@ -96,6 +104,8 @@ public class StreamMergerMetaTests extends AbstractTestClass {
      * Test for using {@link java.util.stream.IntStream#range(int, int)} in {@link StreamMergerTest#testMerge()}.
      */
     @Test
+    @TestID(4)
+    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("4 | java.util.stream.IntStream#range(int, int) in testMerge()")
     public void testIndex2Correct() {
         INVOKED_REQUIRED_METHODS.replaceAll((key, value) -> false);
@@ -104,5 +114,13 @@ public class StreamMergerMetaTests extends AbstractTestClass {
 
         assertTrue(INVOKED_REQUIRED_METHODS.get("range"),
             "IntStream.range(int, int) was not used anywhere in StreamMergerTest.testMerge()");
+    }
+
+    @Override
+    public void check(int testID) {
+        assumeTrue(streamMergerTestClass != null, "Class %s could not be found".formatted(className));
+        assumeTrue(streamMergerTestConstructor != null,
+            "Constructor for class %s could not be found".formatted(className));
+        assumeTrue(testMerge != null, "Method %s#testMerge() could not be found".formatted(className));
     }
 }
