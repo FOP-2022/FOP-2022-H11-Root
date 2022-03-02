@@ -26,7 +26,13 @@ public class CyclicRangeSupplier implements Supplier<Integer> {
         iterator = Stream
             .iterate(
                 first,
-                i -> i == last ? first : first < last ? i + 1 : i - 1
+                i -> i == last
+                    ?
+                        first :
+                        first < last
+                            ?
+                                i + 1 :
+                                i - 1
             )
             .iterator();
     }
