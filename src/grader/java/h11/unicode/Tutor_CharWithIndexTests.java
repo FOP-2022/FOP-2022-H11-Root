@@ -13,18 +13,19 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.function.Predicate;
 
-import static h11.utils.Assertions.assertClassExists;
 import static h11.utils.Assertions.assertClassHasConstructor;
-import static h11.utils.Assertions.assertClassHasExactModifiers;
 import static h11.utils.Assertions.assertClassHasField;
 import static h11.utils.Assertions.assertClassHasMethod;
+import static h11.utils.Assertions.assertClassHasModifiers;
 import static h11.utils.Assertions.assertConstructor;
 import static h11.utils.Assertions.assertField;
 import static h11.utils.Assertions.assertFieldValue;
+import static h11.utils.Assertions.assertMethod;
 import static h11.utils.Assertions.assertMethodReturnValue;
 import static h11.utils.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Tests for class {@link CharWithIndex}.
@@ -33,18 +34,29 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 public class Tutor_CharWithIndexTests extends AbstractTestClass {
 
-    private static Class<?> charWithIndexClass = null;
-    private static Field theChar = null;
-    private static Field index = null;
-    private static Constructor<?> charWithIndexConstructor = null;
-    private static Method getChar = null;
-    private static Method getIndex = null;
+    public static final String FIELD_THE_CHAR_IDENTIFIER = "theChar";
+    public static final String FIELD_INDEX_IDENTIFIER = "index";
+    public static final String CONSTRUCTOR_SIGNATURE = "CharWithIndex(%s, %s)"
+        .formatted(Character.class.getName(), Integer.class.getName());
+    public static final String METHOD_GET_CHAR_SIGNATURE = "getChar()";
+    public static final String METHOD_GET_INDEX_SIGNATURE = "getIndex()";
 
     /**
      * Creates a new {@link Tutor_CharWithIndexTests} object.
      */
     public Tutor_CharWithIndexTests() {
-        super("h11.unicode.CharWithIndex");
+        super(
+            "h11.unicode.CharWithIndex",
+            Map.of(CONSTRUCTOR_SIGNATURE, predicateFromSignature("h11.unicode." + CONSTRUCTOR_SIGNATURE)),
+            Map.of(
+                FIELD_THE_CHAR_IDENTIFIER, field -> field.getName().equals(FIELD_THE_CHAR_IDENTIFIER),
+                FIELD_INDEX_IDENTIFIER, field -> field.getName().equals(FIELD_INDEX_IDENTIFIER)
+            ),
+            Map.of(
+                METHOD_GET_CHAR_SIGNATURE, predicateFromSignature(METHOD_GET_CHAR_SIGNATURE),
+                METHOD_GET_INDEX_SIGNATURE, predicateFromSignature(METHOD_GET_INDEX_SIGNATURE)
+            )
+        );
     }
 
     /**
@@ -53,39 +65,27 @@ public class Tutor_CharWithIndexTests extends AbstractTestClass {
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
     public void testDefinitions() {
-        charWithIndexClass = assertClassExists(className);
-        assertClassHasExactModifiers(charWithIndexClass, Modifier.PUBLIC);
+        assertClassHasModifiers(clazz, Modifier.PUBLIC);
 
-        theChar = assertClassHasField(charWithIndexClass, "theChar");
-        assertField(theChar,
+        assertField(assertClassHasField(this, FIELD_THE_CHAR_IDENTIFIER),
             Modifier.PRIVATE | Modifier.FINAL,
             type -> type.getTypeName().equals(char.class.getName()),
             null);
-
-        index = assertClassHasField(charWithIndexClass, "index");
-        assertField(index,
+        assertField(assertClassHasField(this, FIELD_INDEX_IDENTIFIER),
             Modifier.PRIVATE | Modifier.FINAL,
             type -> type.getTypeName().equals(int.class.getName()),
             null);
 
-        charWithIndexConstructor = assertClassHasConstructor(charWithIndexClass, constructor -> {
-            Type[] parameters = constructor.getGenericParameterTypes();
+        assertConstructor(assertClassHasConstructor(this, CONSTRUCTOR_SIGNATURE), Modifier.PUBLIC, null, null);
 
-            return parameters.length == 2
-                && parameters[0].getTypeName().equals(Character.class.getName())
-                && parameters[1].getTypeName().equals(Integer.class.getName());
-        });
-        assertConstructor(charWithIndexConstructor, Modifier.PUBLIC, null, null);
-
-        getChar = assertClassHasMethod(charWithIndexClass, method ->
-            method.getName().equals("getChar")
-                && method.getReturnType().equals(char.class)
-                && method.getParameterTypes().length == 0);
-
-        getIndex = assertClassHasMethod(charWithIndexClass, method ->
-            method.getName().equals("getIndex")
-                && method.getReturnType().equals(int.class)
-                && method.getParameterTypes().length == 0);
+        assertMethod(assertClassHasMethod(this, METHOD_GET_CHAR_SIGNATURE),
+            null,
+            type -> type.getTypeName().equals(char.class.getName()),
+            null);
+        assertMethod(assertClassHasMethod(this, METHOD_GET_INDEX_SIGNATURE),
+            null,
+            type -> type.getTypeName().equals(int.class.getName()),
+            null);
     }
 
     /**
@@ -94,16 +94,7 @@ public class Tutor_CharWithIndexTests extends AbstractTestClass {
     @Test
     @DisplayName("2 | Class instance, fields and getter")
     public void testInstance() {
-        assumeTrue(charWithIndexClass != null, "Class %s could not be found".formatted(className));
-        assumeTrue(theChar != null, "Field %s#theChar could not be found".formatted(className));
-        assumeTrue(index != null, "Field %s#index could not be found".formatted(className));
-        assumeTrue(charWithIndexConstructor != null,
-            "Constructor for class %s could not be found".formatted(className));
-        assumeTrue(getChar != null,
-            "Method %s#getChar() could not be found".formatted(className));
-        assumeTrue(getIndex != null,
-            "Method %s#getIndex() could not be found".formatted(className));
-
+        Constructor<?> charWithIndexConstructor = getConstructor(CONSTRUCTOR_SIGNATURE);
         boolean exceptionThrown1 = false;
         boolean exceptionThrown2 = false;
 
@@ -132,9 +123,13 @@ public class Tutor_CharWithIndexTests extends AbstractTestClass {
 
         Object instance = newInstance(charWithIndexConstructor, 'A', (int) 'A');
 
+        Field theChar = getField(FIELD_THE_CHAR_IDENTIFIER);
+        Field index = getField(FIELD_INDEX_IDENTIFIER);
         assertFieldValue(theChar, 'A', instance);
         assertFieldValue(index, (int) 'A', instance);
 
+        Method getChar = getMethod(METHOD_GET_CHAR_SIGNATURE);
+        Method getIndex = getMethod(METHOD_GET_INDEX_SIGNATURE);
         assertMethodReturnValue(getChar, 'A', instance);
         assertMethodReturnValue(getIndex, (int) 'A', instance);
     }

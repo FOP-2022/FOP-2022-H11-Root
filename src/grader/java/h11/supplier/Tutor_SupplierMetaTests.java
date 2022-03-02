@@ -1,18 +1,14 @@
 package h11.supplier;
 
 import h11.utils.AbstractTestClass;
-import h11.utils.PreInvocationCheck;
-import h11.utils.TestID;
 import kotlin.Pair;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.opentest4j.AssertionFailedError;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -25,14 +21,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static h11.utils.Assertions.assertAnnotations;
-import static h11.utils.Assertions.assertClassExists;
 import static h11.utils.Assertions.assertClassHasConstructor;
-import static h11.utils.Assertions.assertClassHasExactModifiers;
 import static h11.utils.Assertions.assertClassHasMethod;
+import static h11.utils.Assertions.assertClassHasModifiers;
 import static h11.utils.Assertions.assertEquals;
 import static h11.utils.Assertions.assertMethod;
 import static h11.utils.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Tests for class {@link SupplierTests}.
@@ -40,15 +34,14 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @SuppressWarnings("JavadocReference")
 @TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInvocationCheck {
+public class Tutor_SupplierMetaTests extends AbstractTestClass {
 
-    private static Class<?> supplierTestsClass = null;
-    private static Constructor<?> supplierTestsConstructor = null;
-    private static Method testArraySupplier = null;
-    private static Method testCollectionSupplier = null;
-    private static Method testCyclicRangeSupplier = null;
-    private static Method buildIntegerArray = null;
-    private static Method buildIntegerList = null;
+    public static final String CONSTRUCTOR_SIGNATURE = "SupplierTests()";
+    public static final String METHOD_TEST_ARRAY_SUPPLIER = "testArraySupplier()";
+    public static final String METHOD_TEST_COLLECTION_SUPPLIER = "testCollectionSupplier()";
+    public static final String METHOD_TEST_CYCLIC_RANGE_SUPPLIER = "testCyclicRangeSupplier()";
+    public static final String METHOD_BUILD_INTEGER_ARRAY = "buildIntegerArray(int, int, int)";
+    public static final String METHOD_BUILD_INTEGER_LIST = "buildIntegerList(int, int, int)";
 
     private static final List<Integer[]> BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS = new ArrayList<>();
     private static final List<Integer[]> BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS = new ArrayList<>();
@@ -63,7 +56,17 @@ public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInv
      * Creates a new {@link Tutor_SupplierMetaTests} object.
      */
     public Tutor_SupplierMetaTests() {
-        super("h11.supplier.SupplierTests");
+        super(
+            "h11.supplier.SupplierTests",
+            Map.of(CONSTRUCTOR_SIGNATURE, predicateFromSignature("h11.supplier." + CONSTRUCTOR_SIGNATURE)),
+            Map.of(
+                METHOD_TEST_ARRAY_SUPPLIER, predicateFromSignature(METHOD_TEST_ARRAY_SUPPLIER),
+                METHOD_TEST_COLLECTION_SUPPLIER, predicateFromSignature(METHOD_TEST_COLLECTION_SUPPLIER),
+                METHOD_TEST_CYCLIC_RANGE_SUPPLIER, predicateFromSignature(METHOD_TEST_CYCLIC_RANGE_SUPPLIER),
+                METHOD_BUILD_INTEGER_ARRAY, predicateFromSignature(METHOD_BUILD_INTEGER_ARRAY),
+                METHOD_BUILD_INTEGER_LIST, predicateFromSignature(METHOD_BUILD_INTEGER_LIST)
+            )
+        );
     }
 
     /**
@@ -72,42 +75,24 @@ public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInv
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
     public void testDefinitions() {
-        supplierTestsClass = assertClassExists(className);
-        assertClassHasExactModifiers(supplierTestsClass, Modifier.PUBLIC);
+        assertClassHasModifiers(clazz, Modifier.PUBLIC);
 
-        supplierTestsConstructor = assertClassHasConstructor(supplierTestsClass, constructor ->
-            constructor.getGenericParameterTypes().length == 0);
+        assertClassHasConstructor(this, CONSTRUCTOR_SIGNATURE);
 
-        testArraySupplier = assertClassHasMethod(supplierTestsClass, "testArraySupplier");
+        Method testArraySupplier = assertClassHasMethod(this, METHOD_TEST_ARRAY_SUPPLIER);
         assertAnnotations(testArraySupplier, Test.class);
-        assertMethod(
-            testArraySupplier,
-            Modifier.PUBLIC,
-            type -> type.getTypeName().equals(void.class.getName()),
-            null
-        );
+        assertMethod(testArraySupplier, Modifier.PUBLIC, type -> type.getTypeName().equals(void.class.getName()), null);
 
-        testCollectionSupplier = assertClassHasMethod(supplierTestsClass, "testCollectionSupplier");
+        Method testCollectionSupplier = assertClassHasMethod(this, METHOD_TEST_COLLECTION_SUPPLIER);
         assertAnnotations(testCollectionSupplier, Test.class);
-        assertMethod(
-            testCollectionSupplier,
-            Modifier.PUBLIC,
-            type -> type.getTypeName().equals(void.class.getName()),
-            null
-        );
+        assertMethod(testCollectionSupplier, Modifier.PUBLIC, type -> type.getTypeName().equals(void.class.getName()), null);
 
-        testCyclicRangeSupplier = assertClassHasMethod(supplierTestsClass, "testCyclicRangeSupplier");
+        Method testCyclicRangeSupplier = assertClassHasMethod(this, METHOD_TEST_CYCLIC_RANGE_SUPPLIER);
         assertAnnotations(testCyclicRangeSupplier, Test.class);
-        assertMethod(
-            testCyclicRangeSupplier,
-            Modifier.PUBLIC,
-            type -> type.getTypeName().equals(void.class.getName()),
-            null
-        );
+        assertMethod(testCyclicRangeSupplier, Modifier.PUBLIC, type -> type.getTypeName().equals(void.class.getName()), null);
 
-        buildIntegerArray = assertClassHasMethod(supplierTestsClass, "buildIntegerArray");
         assertMethod(
-            buildIntegerArray,
+            assertClassHasMethod(this, METHOD_BUILD_INTEGER_ARRAY),
             Modifier.PRIVATE,
             type -> type.getTypeName().equals(Integer.class.getName() + "[]"),
             null,
@@ -116,9 +101,8 @@ public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInv
             type -> type.getTypeName().equals(int.class.getName())
         );
 
-        buildIntegerList = assertClassHasMethod(supplierTestsClass, "buildIntegerList");
         assertMethod(
-            buildIntegerList,
+            assertClassHasMethod(this, METHOD_BUILD_INTEGER_LIST),
             Modifier.PRIVATE,
             type -> type.getTypeName().equals("%s<%s>".formatted(List.class.getName(), Integer.class.getName())),
             null,
@@ -132,12 +116,9 @@ public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInv
      * Tests for {@link SupplierTests#buildIntegerArray(int, int, int)}.
      */
     @Test
-    @TestID(2)
-    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("2 | buildIntegerArray(int, int, int)")
     public void testBuildIntegerArray() {
-        buildIntegerArray.setAccessible(true);
-
+        Method buildIntegerArray = getMethod(METHOD_BUILD_INTEGER_ARRAY);
         Integer[][] parameterMatrix = {
             {  0,                 0,  0},
             { 10,                 0,  0},
@@ -148,7 +129,7 @@ public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInv
         };
 
         for (Integer[] parameters : parameterMatrix) {
-            Object instance = newInstance(supplierTestsConstructor);
+            Object instance = newInstance(getConstructor(CONSTRUCTOR_SIGNATURE));
             Integer[] integerArray = invokeMethod(buildIntegerArray, instance, (Object[]) parameters);
 
             assertEquals(parameters[0], integerArray.length,
@@ -165,12 +146,9 @@ public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInv
      * Tests for {@link SupplierTests#buildIntegerList(int, int, int)}.
      */
     @Test
-    @TestID(3)
-    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("3 | buildIntegerList(int, int, int)")
     public void testBuildIntegerList() {
-        buildIntegerList.setAccessible(true);
-
+        Method buildIntegerList = getMethod(METHOD_BUILD_INTEGER_LIST);
         Integer[][] parameterMatrix = {
             { 0,                 0,                     1},
             {10,                 0,                     1},
@@ -180,7 +158,7 @@ public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInv
         };
 
         for (Integer[] parameters : parameterMatrix) {
-            Object instance = newInstance(supplierTestsConstructor);
+            Object instance = newInstance(getConstructor(CONSTRUCTOR_SIGNATURE));
             List<Integer> integerList = invokeMethod(buildIntegerList, instance, (Object[]) parameters);
 
             assertTrue(integerList instanceof LinkedList<Integer>,
@@ -209,12 +187,10 @@ public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInv
      * @see h11.utils.transform.SupplierTestVisitors.ArraySupplierMethodVisitor
      */
     @Test
-    @TestID(4)
-    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("4 | testArraySupplier()")
     public void metaTest_testArraySupplier() {
         BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS.clear();
-        invokeMethod(testArraySupplier, newInstance(supplierTestsConstructor));
+        invokeMethod(getMethod(METHOD_TEST_ARRAY_SUPPLIER), newInstance(getConstructor(CONSTRUCTOR_SIGNATURE)));
 
         if (BUILD_INTEGER_ARRAY_INTERCEPTED_ARGUMENTS.size() < 5) {
             throw new AssertionFailedError("buildIntegerArray(int, int, int) has not been called at least five times",
@@ -247,12 +223,10 @@ public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInv
      * @see h11.utils.transform.SupplierTestVisitors.CollectionSupplierMethodVisitor
      */
     @Test
-    @TestID(5)
-    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("5 | testCollectionSupplier()")
     public void metaTest_testCollectionSupplier() {
         BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS.clear();
-        invokeMethod(testCollectionSupplier, newInstance(supplierTestsConstructor));
+        invokeMethod(getMethod(METHOD_TEST_COLLECTION_SUPPLIER), newInstance(getConstructor(CONSTRUCTOR_SIGNATURE)));
 
         if (BUILD_INTEGER_LIST_INTERCEPTED_ARGUMENTS.size() < 5) {
             throw new AssertionFailedError("buildIntegerList(int, int, int) has not been called at least five times",
@@ -286,52 +260,16 @@ public class Tutor_SupplierMetaTests extends AbstractTestClass implements PreInv
      * @see h11.utils.transform.SupplierTestVisitors.CyclicRangeSupplierMethodVisitor
      */
     @Test
-    @TestID(6)
-    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("6 | testCyclicRangeSupplier()")
     public void metaTest_testCyclicRangeSupplier() {
         CYCLIC_RANGE_SUPPLIER_CONSTRUCTOR_INTERCEPTED_ARGUMENTS.clear();
-        invokeMethod(testCyclicRangeSupplier, newInstance(supplierTestsConstructor));
+        invokeMethod(getMethod(METHOD_TEST_CYCLIC_RANGE_SUPPLIER), newInstance(getConstructor(CONSTRUCTOR_SIGNATURE)));
 
         boolean b = CYCLIC_RANGE_SUPPLIER_CONSTRUCTOR_INTERCEPTED_ARGUMENTS
             .stream()
             .anyMatch(arguments -> CYCLIC_RANGE_SUPPLIER_GET_CALLS >= (Math.abs(arguments[1] - arguments[0]) + 1) * 3);
         if (!b) {
             throw new AssertionFailedError("CyclicRangeSupplier.get() was not invoked at least (|last - first| + 1) * 3 times");
-        }
-    }
-
-    @Override
-    public void check(int testID) {
-        assumeTrue(supplierTestsClass != null, "Class %s could not be found".formatted(className));
-        assumeTrue(supplierTestsConstructor != null,
-            "Constructor for class %s could not be found".formatted(className));
-
-        switch (testID) {
-            case 2 ->
-                assumeTrue(buildIntegerArray != null,
-                    "Method %s#buildIntegerArray(int, int, int) could not be found".formatted(className));
-
-            case 3 ->
-                assumeTrue(buildIntegerList != null,
-                    "Method %s#buildIntegerList(int, int, int) could not be found".formatted(className));
-
-            case 4 ->
-                assumeTrue(testArraySupplier != null,
-                    "Method %s#testArraySupplier() could not be found".formatted(className));
-
-            case 5 ->
-                assumeTrue(testCollectionSupplier != null,
-                    "Method %s#testCollectionSupplier() could not be found".formatted(className));
-
-            case 6 ->
-                assumeTrue(testCyclicRangeSupplier != null,
-                    "Method %s#testCyclicRangeSupplier() could not be found".formatted(className));
-
-            // Checkstyle doesn't like switches without default branch so here's a no-op, I guess
-            default -> assumeTrue(
-                ((1 / 3) << 5 & 67 | -4 ^ 0b10 >> 4 / 3 * 2 % (-'☕' << "(͡° ͜ʖ ͡°)".chars().sum() >>> (0xb7c2))) == -4
-            );
         }
     }
 

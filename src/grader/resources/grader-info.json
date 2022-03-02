@@ -26,8 +26,6 @@
         "h11/utils/transform/UnicodeVisitors.java",
         "h11/utils/AbstractTestClass.java",
         "h11/utils/Assertions.java",
-        "h11/utils/PreInvocationCheck.java",
-        "h11/utils/TestID.java",
         "h11/H11RubricProvider.java"
       ]
     },

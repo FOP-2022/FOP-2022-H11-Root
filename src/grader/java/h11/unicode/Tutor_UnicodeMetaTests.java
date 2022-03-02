@@ -1,17 +1,13 @@
 package h11.unicode;
 
 import h11.utils.AbstractTestClass;
-import h11.utils.PreInvocationCheck;
-import h11.utils.TestID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.opentest4j.AssertionFailedError;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -20,24 +16,21 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import static h11.utils.Assertions.assertAnnotations;
-import static h11.utils.Assertions.assertClassExists;
 import static h11.utils.Assertions.assertClassHasConstructor;
 import static h11.utils.Assertions.assertClassHasMethod;
 import static h11.utils.Assertions.assertMethod;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static h11.utils.Assertions.assertTrue;
 
 /**
  * Tests for class {@link UnicodeTests}.
  */
 @TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class Tutor_UnicodeMetaTests extends AbstractTestClass implements PreInvocationCheck {
+public class Tutor_UnicodeMetaTests extends AbstractTestClass {
 
-    private static Class<?> unicodeTestsClass = null;
-    private static Constructor<?> unicodeTestsConstructor = null;
-    private static Method testCharFromUnicode = null;
-    private static Method testCharFromUnicodeCasesExchanged = null;
+    public static final String CONSTRUCTOR_SIGNATURE = "UnicodeTests()";
+    public static final String METHOD_TEST_CHAR_FROM_UNICODE_SIGNATURE = "testCharFromUnicode()";
+    public static final String METHOD_TEST_CHAR_FROM_UNICODE_CASES_EXCHANGED_SIGNATURE = "testCharFromUnicodeCasesExchanged()";
 
     public static final Map<String, List<Integer>> CONSTRUCTOR_INVOCATION_ARGS = Map.of(
         "h11/unicode/CharFromUnicode", new ArrayList<>(),
@@ -48,7 +41,16 @@ public class Tutor_UnicodeMetaTests extends AbstractTestClass implements PreInvo
      * Creates a new {@link Tutor_UnicodeMetaTests} object.
      */
     public Tutor_UnicodeMetaTests() {
-        super("h11.unicode.UnicodeTests");
+        super(
+            "h11.unicode.UnicodeTests",
+            Map.of(CONSTRUCTOR_SIGNATURE, predicateFromSignature("h11.unicode." + CONSTRUCTOR_SIGNATURE)),
+            Map.of(
+                METHOD_TEST_CHAR_FROM_UNICODE_SIGNATURE,
+                predicateFromSignature(METHOD_TEST_CHAR_FROM_UNICODE_SIGNATURE),
+                METHOD_TEST_CHAR_FROM_UNICODE_CASES_EXCHANGED_SIGNATURE,
+                predicateFromSignature(METHOD_TEST_CHAR_FROM_UNICODE_CASES_EXCHANGED_SIGNATURE)
+            )
+        );
     }
 
     /**
@@ -57,12 +59,9 @@ public class Tutor_UnicodeMetaTests extends AbstractTestClass implements PreInvo
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
     public void testDefinitions() {
-        unicodeTestsClass = assertClassExists(className);
+        assertClassHasConstructor(this, CONSTRUCTOR_SIGNATURE);
 
-        unicodeTestsConstructor = assertClassHasConstructor(unicodeTestsClass, constructor ->
-            constructor.getGenericParameterTypes().length == 0);
-
-        testCharFromUnicode = assertClassHasMethod(unicodeTestsClass, "testCharFromUnicode");
+        Method testCharFromUnicode = assertClassHasMethod(this, METHOD_TEST_CHAR_FROM_UNICODE_SIGNATURE);
         assertAnnotations(testCharFromUnicode, Test.class);
         assertMethod(
             testCharFromUnicode,
@@ -71,7 +70,8 @@ public class Tutor_UnicodeMetaTests extends AbstractTestClass implements PreInvo
             null
         );
 
-        testCharFromUnicodeCasesExchanged = assertClassHasMethod(unicodeTestsClass, "testCharFromUnicodeCasesExchanged");
+        Method testCharFromUnicodeCasesExchanged = assertClassHasMethod(this,
+            METHOD_TEST_CHAR_FROM_UNICODE_CASES_EXCHANGED_SIGNATURE);
         assertAnnotations(testCharFromUnicodeCasesExchanged, Test.class);
         assertMethod(
             testCharFromUnicodeCasesExchanged,
@@ -85,13 +85,11 @@ public class Tutor_UnicodeMetaTests extends AbstractTestClass implements PreInvo
      * Tests for {@link UnicodeTests#testCharFromUnicode()}.
      */
     @Test
-    @TestID(2)
-    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("2 | testCharFromUnicode()")
     public void metaTest_testCharFromUnicode() {
         List<Integer> charFromUnicodeApplyArgs = CONSTRUCTOR_INVOCATION_ARGS.get("h11/unicode/CharFromUnicode");
         charFromUnicodeApplyArgs.clear();
-        invokeMethod(testCharFromUnicode, newInstance(unicodeTestsConstructor));
+        invokeMethod(getMethod(METHOD_TEST_CHAR_FROM_UNICODE_SIGNATURE), newInstance(getConstructor(CONSTRUCTOR_SIGNATURE)));
 
         if (charFromUnicodeApplyArgs.size() < 5) {
             throw new AssertionFailedError("CharFromUnicode.apply(Integer) was not called at least 5 times",
@@ -117,14 +115,13 @@ public class Tutor_UnicodeMetaTests extends AbstractTestClass implements PreInvo
      * Tests for {@link UnicodeTests#testCharFromUnicodeCasesExchanged()}.
      */
     @Test
-    @TestID(3)
-    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("3 | testCharFromUnicodeCasesExchanged()")
     public void metaTest_testCharFromUnicodeCasesExchanged() {
         List<Integer> charFromUnicodeCasesExchangedApplyArgs = CONSTRUCTOR_INVOCATION_ARGS
             .get("h11/unicode/CharFromUnicodeCasesExchanged");
         charFromUnicodeCasesExchangedApplyArgs.clear();
-        invokeMethod(testCharFromUnicodeCasesExchanged, newInstance(unicodeTestsConstructor));
+        invokeMethod(getMethod(METHOD_TEST_CHAR_FROM_UNICODE_CASES_EXCHANGED_SIGNATURE),
+            newInstance(getConstructor(CONSTRUCTOR_SIGNATURE)));
 
         if (charFromUnicodeCasesExchangedApplyArgs.size() < 5) {
             throw new AssertionFailedError("CharFromUnicodeCasesExchanged.apply(Integer) was not called at least 5 times",
@@ -145,28 +142,6 @@ public class Tutor_UnicodeMetaTests extends AbstractTestClass implements PreInvo
         );
         invocationCheckList.forEach((pred, msg) ->
             assertTrue(charFromUnicodeCasesExchangedApplyArgs.stream().anyMatch(pred), msg));
-    }
-
-    @Override
-    public void check(int testID) {
-        assumeTrue(unicodeTestsClass != null, "Class %s could not be found".formatted(className));
-        assumeTrue(unicodeTestsConstructor != null,
-            "Constructor for class %s could not be found".formatted(className));
-
-        switch (testID) {
-            case 2 ->
-                assumeTrue(testCharFromUnicode != null,
-                    "Method %s#testCharFromUnicode() could not be found".formatted(className));
-
-            case 3 ->
-                assumeTrue(testCharFromUnicodeCasesExchanged != null,
-                    "Method %s#testCharFromUnicodeCasesExchanged() could not be found".formatted(className));
-
-            // Checkstyle doesn't like switches without default branch so here's a no-op, I guess
-            default -> assumeTrue(
-                ((1 / 3) << 5 & 67 | -4 ^ 0b10 >> 4 / 3 * 2 % (-'☕' << "(͡° ͜ʖ ͡°)".chars().sum() >>> (0xb7c2))) == -4
-            );
-        }
     }
 
     private static boolean isInCharacterRange(int i) {

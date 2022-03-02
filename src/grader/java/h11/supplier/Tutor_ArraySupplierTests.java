@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -20,16 +18,14 @@ import java.util.Vector;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static h11.utils.Assertions.assertClassExists;
 import static h11.utils.Assertions.assertClassHasConstructor;
-import static h11.utils.Assertions.assertClassHasExactModifiers;
 import static h11.utils.Assertions.assertClassHasMethod;
+import static h11.utils.Assertions.assertClassHasModifiers;
 import static h11.utils.Assertions.assertClassImplements;
 import static h11.utils.Assertions.assertClassTypeParameters;
 import static h11.utils.Assertions.assertConstructor;
 import static h11.utils.Assertions.assertMethod;
 import static h11.utils.Assertions.assertSame;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Tests for class {@link ArraySupplier}.
@@ -38,15 +34,18 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 public class Tutor_ArraySupplierTests extends AbstractTestClass {
 
-    private static Class<?> arraySupplierClass = null;
-    private static Constructor<?> arraySupplierConstructor = null;
-    private static Method get = null;
+    public static final String CONSTRUCTOR_SIGNATURE = "ArraySupplier(T[])";
+    public static final String METHOD_GET_SIGNATURE = "get()";
 
     /**
      * Creates a new {@link Tutor_ArraySupplierTests} object.
      */
     public Tutor_ArraySupplierTests() {
-        super("h11.supplier.ArraySupplier");
+        super(
+            "h11.supplier.ArraySupplier",
+            Map.of(CONSTRUCTOR_SIGNATURE, predicateFromSignature("h11.supplier." + CONSTRUCTOR_SIGNATURE)),
+            Map.of(METHOD_GET_SIGNATURE, predicateFromSignature(METHOD_GET_SIGNATURE))
+        );
     }
 
     /**
@@ -55,20 +54,16 @@ public class Tutor_ArraySupplierTests extends AbstractTestClass {
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
     public void testDefinitions() {
-        arraySupplierClass = assertClassExists(className);
-        assertClassHasExactModifiers(arraySupplierClass, Modifier.PUBLIC);
-        assertClassTypeParameters(arraySupplierClass, new String[] {"T"}, new String[][] {{Object.class.getName()}});
-        assertClassImplements(arraySupplierClass, Supplier.class.getName() + "<T>");
+        assertClassHasModifiers(clazz, Modifier.PUBLIC);
+        assertClassTypeParameters(clazz, new String[] {"T"}, new String[][] {{Object.class.getName()}});
+        assertClassImplements(clazz, Supplier.class.getName() + "<T>");
 
-        arraySupplierConstructor = assertClassHasConstructor(arraySupplierClass, constructor -> {
-            Type[] parameterTypes = constructor.getGenericParameterTypes();
-            return parameterTypes.length == 1 && parameterTypes[0].getTypeName().equals("T[]");
-        });
-        assertConstructor(arraySupplierConstructor, Modifier.PUBLIC, (Predicate<Type>) null);
+        assertConstructor(assertClassHasConstructor(this, CONSTRUCTOR_SIGNATURE), Modifier.PUBLIC, (Predicate<Type>) null);
 
-        get = assertClassHasMethod(arraySupplierClass, method ->
-            method.getName().equals("get") && method.getParameters().length == 0);
-        assertMethod(get, Modifier.PUBLIC, type -> type.getTypeName().equals("T"), "get");
+        assertMethod(assertClassHasMethod(this, METHOD_GET_SIGNATURE),
+            Modifier.PUBLIC,
+            type -> type.getTypeName().equals("T"),
+            "get");
     }
 
     /**
@@ -78,11 +73,6 @@ public class Tutor_ArraySupplierTests extends AbstractTestClass {
     @Test
     @DisplayName("2 | Class instance and method tests")
     public void testInstance() {
-        assumeTrue(arraySupplierClass != null, "Class %s could not be found".formatted(className));
-        assumeTrue(arraySupplierConstructor != null,
-            "Constructor for class %s could not be found".formatted(className));
-        assumeTrue(get != null, "Method %s#get() could not be found".formatted(className));
-
         Map<List<ArrayList<LinkedList<Set<Vector<Integer>>>>>[],
             Map<Map<List<ArrayList<LinkedList<Set<Vector<Integer>>>>>[],
                 List<ArrayList<LinkedList<Set<Vector<Integer>>>>>[]>,
@@ -98,10 +88,11 @@ public class Tutor_ArraySupplierTests extends AbstractTestClass {
         };
 
         for (Object[] parameters : parameterMatrix) {
-            Object instance = newInstance(arraySupplierConstructor, (Object) parameters);
+            Object instance = newInstance(getConstructor(CONSTRUCTOR_SIGNATURE), (Object) parameters);
 
             for (int i = 0; i < parameters.length + 5; i++) {
-                assertSame(i < parameters.length ? parameters[i] : null, invokeMethod(get, instance));
+                assertSame(i < parameters.length ? parameters[i] : null,
+                    invokeMethod(getMethod(METHOD_GET_SIGNATURE), instance));
             }
         }
     }

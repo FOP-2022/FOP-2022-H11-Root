@@ -1,27 +1,21 @@
 package h11.merge;
 
+import h11.unicode.Tutor_CharWithIndexTests;
 import h11.utils.AbstractTestClass;
-import h11.utils.PreInvocationCheck;
-import h11.utils.TestID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.opentest4j.AssertionFailedError;
-import org.opentest4j.TestAbortedException;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -33,11 +27,10 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import static h11.utils.Assertions.assertArrayEquals;
-import static h11.utils.Assertions.assertClassExists;
 import static h11.utils.Assertions.assertClassHasConstructor;
-import static h11.utils.Assertions.assertClassHasExactModifiers;
 import static h11.utils.Assertions.assertClassHasField;
 import static h11.utils.Assertions.assertClassHasMethod;
+import static h11.utils.Assertions.assertClassHasModifiers;
 import static h11.utils.Assertions.assertConstructor;
 import static h11.utils.Assertions.assertDoesNotThrow;
 import static h11.utils.Assertions.assertEquals;
@@ -48,7 +41,6 @@ import static h11.utils.Assertions.assertNotNull;
 import static h11.utils.Assertions.assertNull;
 import static h11.utils.Assertions.assertSame;
 import static h11.utils.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Tests for class {@link StreamMerger}.
@@ -56,21 +48,31 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @SuppressWarnings({"JavadocReference", "unchecked"})
 @TestForSubmission("h11")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class Tutor_StreamMergerTests extends AbstractTestClass implements PreInvocationCheck {
+public class Tutor_StreamMergerTests extends AbstractTestClass {
 
-    private static Class<?> streamMergerClass = null;
-    private static Field predicate = null;
-    private static Field comparator = null;
-    private static Field function = null;
-    private static Field collector = null;
-    private static Constructor<?> streamMergerConstructor = null;
-    private static Method merge = null;
+    public static final String FIELD_PREDICATE_IDENTIFIER = "predicate";
+    public static final String FIELD_COMPARATOR_IDENTIFIER = "comparator";
+    public static final String FIELD_FUNCTION_IDENTIFIER = "function";
+    public static final String FIELD_COLLECTOR_IDENTIFIER = "collector";
+    public static final String CONSTRUCTOR_SIGNATURE = "StreamMerger()";
+    public static final String METHOD_MERGE_SIGNATURE = "merge(%s<%s>[])"
+        .formatted(Stream.class.getName(), Integer.class.getName());
 
     /**
      * Creates a new {@link Tutor_StreamMergerTests} object.
      */
     public Tutor_StreamMergerTests() {
-        super("h11.merge.StreamMerger");
+        super(
+            "h11.merge.StreamMerger",
+            Map.of(CONSTRUCTOR_SIGNATURE, predicateFromSignature("h11.merge." + CONSTRUCTOR_SIGNATURE)),
+            Map.of(
+                FIELD_PREDICATE_IDENTIFIER, field -> field.getName().equals(FIELD_PREDICATE_IDENTIFIER),
+                FIELD_COMPARATOR_IDENTIFIER, field -> field.getName().equals(FIELD_COMPARATOR_IDENTIFIER),
+                FIELD_FUNCTION_IDENTIFIER, field -> field.getName().equals(FIELD_FUNCTION_IDENTIFIER),
+                FIELD_COLLECTOR_IDENTIFIER, field -> field.getName().equals(FIELD_COLLECTOR_IDENTIFIER)
+            ),
+            Map.of(METHOD_MERGE_SIGNATURE, predicateFromSignature(METHOD_MERGE_SIGNATURE))
+        );
     }
 
     /**
@@ -79,22 +81,21 @@ public class Tutor_StreamMergerTests extends AbstractTestClass implements PreInv
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
     public void testDefinitions() {
-        streamMergerClass = assertClassExists(className);
-        assertClassHasExactModifiers(streamMergerClass, Modifier.PUBLIC);
+        assertClassHasModifiers(clazz, Modifier.PUBLIC);
 
-        predicate = assertClassHasField(streamMergerClass, "predicate");
+        Field predicate = assertClassHasField(this, FIELD_PREDICATE_IDENTIFIER);
         assertField(predicate,
             Modifier.PRIVATE | Modifier.FINAL,
             type -> type.getTypeName().equals("%s<%s>".formatted(Predicate.class.getName(), Integer.class.getName())),
             null);
 
-        comparator = assertClassHasField(streamMergerClass, "comparator");
+        Field comparator = assertClassHasField(this, FIELD_COMPARATOR_IDENTIFIER);
         assertField(comparator,
             Modifier.PRIVATE | Modifier.FINAL,
             type -> type.getTypeName().equals("%s<%s>".formatted(Comparator.class.getName(), Integer.class.getName())),
             null);
 
-        function = assertClassHasField(streamMergerClass, "function");
+        Field function = assertClassHasField(this, FIELD_FUNCTION_IDENTIFIER);
         assertField(function,
             Modifier.PRIVATE | Modifier.FINAL,
             type -> type.getTypeName().equals(
@@ -102,7 +103,7 @@ public class Tutor_StreamMergerTests extends AbstractTestClass implements PreInv
             ),
             null);
 
-        collector = assertClassHasField(streamMergerClass, "collector");
+        Field collector = assertClassHasField(this, FIELD_COLLECTOR_IDENTIFIER);
         assertField(collector,
             Modifier.PRIVATE | Modifier.FINAL,
             type -> Pattern.matches(
@@ -111,32 +112,23 @@ public class Tutor_StreamMergerTests extends AbstractTestClass implements PreInv
             ),
             null);
 
-        streamMergerConstructor = assertClassHasConstructor(streamMergerClass, constructor ->
-            constructor.getParameters().length == 0);
-        assertConstructor(streamMergerConstructor, Modifier.PUBLIC);
+        assertConstructor(assertClassHasConstructor(this, CONSTRUCTOR_SIGNATURE), Modifier.PUBLIC);
 
-        merge = assertClassHasMethod(streamMergerClass, method -> {
-            Type[] parameterTypes = method.getGenericParameterTypes();
-
-            return method.getName().equals("merge")
-                && method.getGenericReturnType().getTypeName().equals("h11.unicode.CharWithIndex[]")
-                && parameterTypes.length == 1
-                && parameterTypes[0].getTypeName().equals("%s<%s>[]".formatted(Stream.class.getName(), Integer.class.getName()));
-        });
-        assertMethod(merge, Modifier.PUBLIC, null, null, (Predicate<Type>) null);
+        assertMethod(assertClassHasMethod(this, METHOD_MERGE_SIGNATURE),
+            Modifier.PUBLIC,
+            type -> type.getTypeName().equals("h11.unicode.CharWithIndex[]"),
+            null,
+            (Predicate<Type>) null);
     }
 
     /**
      * Tests for {@link StreamMerger#predicate}.
      */
     @Test
-    @TestID(2)
-    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("2 | Field predicate")
     public void testPredicate() {
-        predicate.setAccessible(true);
-
-        Predicate<Integer> actualPredicate = getFieldValue(predicate, newInstance(streamMergerConstructor));
+        Predicate<Integer> actualPredicate = getFieldValue(getField(FIELD_PREDICATE_IDENTIFIER),
+            newInstance(getConstructor(CONSTRUCTOR_SIGNATURE)));
         Integer[] integers = {Integer.MIN_VALUE, -1, 0, 1, Integer.MAX_VALUE};
 
         assertFalse(actualPredicate.test(null), "Predicate does not return false for value null");
@@ -149,14 +141,11 @@ public class Tutor_StreamMergerTests extends AbstractTestClass implements PreInv
      * Tests for {@link StreamMerger#comparator}.
      */
     @Test
-    @TestID(3)
-    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("3 | Field comparator")
     public void testComparator() {
-        comparator.setAccessible(true);
-
         Comparator<Integer> referenceComparator = Comparator.comparingInt(StreamMergerSolution::digitSum);
-        Comparator<Integer> actualComparator = getFieldValue(comparator, newInstance(streamMergerConstructor));
+        Comparator<Integer> actualComparator = getFieldValue(getField(FIELD_COMPARATOR_IDENTIFIER),
+            newInstance(getConstructor(CONSTRUCTOR_SIGNATURE)));
 
         Arrays
             .stream(new Integer[][]{
@@ -178,13 +167,10 @@ public class Tutor_StreamMergerTests extends AbstractTestClass implements PreInv
      * Tests for {@link StreamMerger#function}.
      */
     @Test
-    @TestID(4)
-    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("4 | Field function")
     public void testFunction() {
-        function.setAccessible(true);
-
-        Function<Integer, ?> actualFunction = getFieldValue(function, newInstance(streamMergerConstructor));
+        Function<Integer, ?> actualFunction = getFieldValue(getField(FIELD_FUNCTION_IDENTIFIER),
+            newInstance(getConstructor(CONSTRUCTOR_SIGNATURE)));
 
         assertNotNull(actualFunction.apply((int) 'A'),
             "Function did not return correct value when invoked with " + (int) 'A');
@@ -206,13 +192,10 @@ public class Tutor_StreamMergerTests extends AbstractTestClass implements PreInv
      * Tests for {@link Collector#supplier()} and {@link Collector#finisher()} of {@link StreamMerger#collector}.
      */
     @Test
-    @TestID(5)
-    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("5 | Collector supplier and finisher")
     public void testCollectorSupplierFinisher() {
-        collector.setAccessible(true);
-
-        Collector<Object, Object, Object[]> actualCollector = getFieldValue(collector, newInstance(streamMergerConstructor));
+        Collector<Object, Object, Object[]> actualCollector = getFieldValue(getField(FIELD_COLLECTOR_IDENTIFIER),
+            newInstance(getConstructor(CONSTRUCTOR_SIGNATURE)));
         Supplier<Object> containerSupplier = assertDoesNotThrow(actualCollector::supplier,
             "An exception occurred while invoking collector.supplier()");
         Function<Object, Object[]> finisherFunction = assertDoesNotThrow(actualCollector::finisher,
@@ -231,13 +214,10 @@ public class Tutor_StreamMergerTests extends AbstractTestClass implements PreInv
      * Tests for {@link Collector#accumulator()} of {@link StreamMerger#collector}.
      */
     @Test
-    @TestID(6)
-    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("6 | Collector accumulator")
     public void testAccumulator() {
-        collector.setAccessible(true);
-
-        Collector<Object, Object, Object[]> actualCollector = getFieldValue(collector, newInstance(streamMergerConstructor));
+        Collector<Object, Object, Object[]> actualCollector = getFieldValue(getField(FIELD_COLLECTOR_IDENTIFIER),
+            newInstance(getConstructor(CONSTRUCTOR_SIGNATURE)));
         Supplier<Object> containerSupplier = assertDoesNotThrow(actualCollector::supplier,
             "An exception occurred while invoking collector.supplier()");
         BiConsumer<Object, Object> collectorAccumulator = assertDoesNotThrow(actualCollector::accumulator,
@@ -262,13 +242,10 @@ public class Tutor_StreamMergerTests extends AbstractTestClass implements PreInv
      * Tests for {@link Collector#combiner()} of {@link StreamMerger#collector}.
      */
     @Test
-    @TestID(7)
-    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("7 | Collector combiner")
     public void testCombiner() {
-        collector.setAccessible(true);
-
-        Collector<Object, Object, Object[]> actualCollector = getFieldValue(collector, newInstance(streamMergerConstructor));
+        Collector<Object, Object, Object[]> actualCollector = getFieldValue(getField(FIELD_COLLECTOR_IDENTIFIER),
+            newInstance(getConstructor(CONSTRUCTOR_SIGNATURE)));
         Supplier<Object> containerSupplier = assertDoesNotThrow(actualCollector::supplier,
             "An exception occurred while invoking collector.supplier()");
         BiConsumer<Object, Object> collectorAccumulator = assertDoesNotThrow(actualCollector::accumulator,
@@ -303,16 +280,9 @@ public class Tutor_StreamMergerTests extends AbstractTestClass implements PreInv
      * Tests for {@link StreamMerger#merge(Stream[])}.
      */
     @Test
-    @TestID(8)
-    @ExtendWith(PreInvocationCheck.Interceptor.class)
     @DisplayName("8 | merge(java.util.stream.Stream[])")
     public void testMerge() {
-        assumeTrue(streamMergerClass != null, "Class %s could not be found".formatted(className));
-        assumeTrue(streamMergerConstructor != null,
-            "Constructor for class %s could not be found".formatted(className));
-        assumeTrue(merge != null, "Method %s#merge(java.util.stream.Stream[]) could not be found".formatted(className));
-
-        Object instance = newInstance(streamMergerConstructor);
+        Object instance = newInstance(getConstructor(CONSTRUCTOR_SIGNATURE));
         Class<?> charWithIndexClass = getCharWithIndexClass();
         Integer[][] streamElements = new Integer[][] {
             {0, 1, 2, 3, 4, 5},
@@ -324,7 +294,7 @@ public class Tutor_StreamMergerTests extends AbstractTestClass implements PreInv
         Object[] referenceResultArray = StreamMergerSolution.merge(
             Arrays.stream(streamElements).map(Arrays::stream).toArray(Stream[]::new)
         );
-        Object[] actualResultArray = invokeMethod(merge, instance,
+        Object[] actualResultArray = invokeMethod(getMethod(METHOD_MERGE_SIGNATURE), instance,
             (Object) Arrays.stream(streamElements).map(Arrays::stream).toArray(Stream[]::new));
 
         assertEquals(referenceResultArray.length, actualResultArray.length,
@@ -339,72 +309,14 @@ public class Tutor_StreamMergerTests extends AbstractTestClass implements PreInv
         }
     }
 
-    @Override
-    public void check(int testID) {
-        assumeTrue(streamMergerClass != null, "Class %s could not be found".formatted(className));
-        assumeTrue(streamMergerConstructor != null,
-            "Constructor for class %s could not be found".formatted(className));
-
-        switch (testID) {
-            case 2 ->
-                assumeTrue(predicate != null,
-                    "Field %s#predicate could not be found".formatted(className));
-
-            case 3 ->
-                assumeTrue(comparator != null,
-                    "Field %s#comparator could not be found".formatted(className));
-
-            case 4 ->
-                assumeTrue(function != null,
-                    "Field %s#function could not be found".formatted(className));
-
-            case 5, 6, 7 ->
-                assumeTrue(collector != null,
-                    "Field %s#collector could not be found".formatted(className));
-
-            case 8 ->
-                assumeTrue(merge != null,
-                    "Method %s#merge(java.util.stream.Stream[]) could not be found".formatted(className));
-
-            // Checkstyle doesn't like switches without default branch so here's a no-op, I guess
-            default -> assumeTrue(
-                ((1 / 3) << 5 & 67 | -4 ^ 0b10 >> 4 / 3 * 2 % (-'☕' << "(͡° ͜ʖ ͡°)".chars().sum() >>> (0xb7c2))) == -4
-            );
-        }
-    }
-
     private static Object newCharWithIndexInstance() {
-        final String className = "h11.unicode.CharWithIndex";
-
-        try {
-            Class<?> charWithIndexClass = Class.forName(className);
-            Constructor<?> charWithIndexConstructor = assertClassHasConstructor(charWithIndexClass, constructor -> {
-                Type[] parameters = constructor.getGenericParameterTypes();
-
-                return parameters.length == 2
-                    && parameters[0].getTypeName().equals(Character.class.getName())
-                    && parameters[1].getTypeName().equals(Integer.class.getName());
-            });
-
-            return charWithIndexConstructor.newInstance('a', (int) 'a');
-        } catch (ClassNotFoundException e) {
-            throw new TestAbortedException("Class %s does not exist".formatted(className), e);
-        } catch (InstantiationException e) {
-            throw new AssertionFailedError("Could not create instance of " + className, e);
-        } catch (IllegalAccessException e) {
-            throw new AssertionFailedError("Could not access constructor of class " + className, e);
-        } catch (InvocationTargetException e) {
-            throw new AssertionFailedError("An exception occurred while instantiating " + className,
-                e.getCause());
-        }
+        Tutor_CharWithIndexTests charWithIndexTests = new Tutor_CharWithIndexTests();
+        return charWithIndexTests.newInstance(
+            charWithIndexTests.getConstructor(Tutor_CharWithIndexTests.CONSTRUCTOR_SIGNATURE), 'a', (int) 'a');
     }
 
     private static Class<?> getCharWithIndexClass() {
-        try {
-            return Class.forName("h11.unicode.CharWithIndex");
-        } catch (ClassNotFoundException e) {
-            throw new TestAbortedException("Class h11.unicode.CharWithIndex could not be found", e);
-        }
+        return new Tutor_CharWithIndexTests().clazz;
     }
 
     /**

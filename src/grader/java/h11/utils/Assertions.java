@@ -45,25 +45,12 @@ public class Assertions extends org.junit.jupiter.api.Assertions {
         MODIFIER_STRING.put(Modifier.INTERFACE, "INTERFACE");
         MODIFIER_STRING.put(Modifier.ABSTRACT, "ABSTRACT");
         MODIFIER_STRING.put(Modifier.STRICT, "STRICT");
+        MODIFIER_STRING.put(0x1000, "SYNTHETIC");
     }
 
     /*================================================*
      * Classes                                        *
      *================================================*/
-
-    /**
-     * Asserts that the class {@code className} exists and returns the corresponding
-     * {@link Class} object.
-     *
-     * @param className the fully qualified class name
-     * @return the {@link Class} object if no exception is thrown
-     */
-    public static Class<?> assertClassExists(String className) {
-        return assertDoesNotThrow(
-            () -> Class.forName(className),
-            "Class %s could not be found".formatted(className)
-        );
-    }
 
     /**
      * Asserts that {@code clazz} has the modifiers represented by {@code modifiers}.
@@ -175,17 +162,18 @@ public class Assertions extends org.junit.jupiter.api.Assertions {
      *================================================*/
 
     /**
-     * Asserts that {@code clazz} has a field with name {@code fieldName} and returns it.
+     * Asserts that a tested class has a field with identifier {@code identifier}.
      *
-     * @param clazz     the class the field belongs to
-     * @param fieldName the name of the field
-     * @return the {@link Field} object if no exception is thrown
+     * @param context    the test class
+     * @param identifier the identifier of the field
+     * @return the {@link Field} if it exists in {@link AbstractTestClass#fieldMap}
      */
-    public static Field assertClassHasField(Class<?> clazz, String fieldName) {
-        return assertDoesNotThrow(
-            () -> assertClassHasField(clazz, field -> field.getName().equals(fieldName)),
-            "No field matching name \"%s\" was found".formatted(fieldName)
-        );
+    public static Field assertClassHasField(AbstractTestClass context, String identifier) {
+        if (context.fieldMap.containsKey(identifier)) {
+            return context.getField(identifier);
+        } else {
+            throw new AssertionFailedError("No field with identifier \"%s\" was found".formatted(identifier));
+        }
     }
 
     /**
@@ -258,25 +246,18 @@ public class Assertions extends org.junit.jupiter.api.Assertions {
      *================================================*/
 
     /**
-     * Asserts that {@code clazz} has a constructor matching {@code predicate} and returns it.
+     * Asserts that a tested class has a constructor with signature {@code signature}.
      *
-     * @param clazz     the class the constructor belongs to
-     * @param predicate the predicate matching constructor
-     * @return the {@link Constructor} object if no exception is thrown
+     * @param context   the test class
+     * @param signature the signature of the constructor
+     * @return the {@link Constructor} if it exists in {@link AbstractTestClass#constructorMap}
      */
-    public static Constructor<?> assertClassHasConstructor(Class<?> clazz, Predicate<Constructor<?>> predicate) {
-        Set<Constructor<?>> filteredConstructors = Stream
-            .concat(Arrays.stream(clazz.getConstructors()), Arrays.stream(clazz.getDeclaredConstructors()))
-            .filter(predicate)
-            .collect(Collectors.toUnmodifiableSet());
-
-        if (filteredConstructors.size() == 0) {
-            throw new AssertionFailedError("No constructors matching the given predicate were found");
-        } else if (filteredConstructors.size() != 1) {
-            throw new AssertionFailedError("Multiple constructors matching the given predicate were found"
-                + " - cannot resolve ambiguity");
+    public static Constructor<?> assertClassHasConstructor(AbstractTestClass context, String signature) {
+        if (context.constructorMap.containsKey(signature)) {
+            return context.getConstructor(signature);
         } else {
-            return filteredConstructors.iterator().next();
+            throw new AssertionFailedError(("Class %s does not have a constructor that matched "
+                + "the predicate for signature %s").formatted(context.className, signature));
         }
     }
 
@@ -316,17 +297,18 @@ public class Assertions extends org.junit.jupiter.api.Assertions {
      *================================================*/
 
     /**
-     * Asserts that {@code clazz} has a method with name {@code methodName} and returns it.
+     * Asserts that a tested class has a method with signature {@code signature}.
      *
-     * @param clazz      the class the method belongs to
-     * @param methodName the name of the method
-     * @return the {@link Method} object if no exception is thrown
+     * @param context   the test class
+     * @param signature the signature of the method
+     * @return the {@link Method} if it exists in {@link AbstractTestClass#methodMap}
      */
-    public static Method assertClassHasMethod(Class<?> clazz, String methodName) {
-        return assertDoesNotThrow(
-            () -> assertClassHasMethod(clazz, field -> field.getName().equals(methodName)),
-            "No method matching name \"%s\" was found".formatted(methodName)
-        );
+    public static Method assertClassHasMethod(AbstractTestClass context, String signature) {
+        if (context.methodMap.containsKey(signature)) {
+            return context.getMethod(signature);
+        } else {
+            throw new AssertionFailedError("No method matching name \"%s\" was found".formatted(signature));
+        }
     }
 
     /**

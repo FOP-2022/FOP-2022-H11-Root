@@ -8,22 +8,20 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.opentest4j.AssertionFailedError;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static h11.utils.Assertions.assertClassExists;
 import static h11.utils.Assertions.assertClassHasConstructor;
-import static h11.utils.Assertions.assertClassHasExactModifiers;
 import static h11.utils.Assertions.assertClassHasMethod;
+import static h11.utils.Assertions.assertClassHasModifiers;
 import static h11.utils.Assertions.assertClassImplements;
 import static h11.utils.Assertions.assertEquals;
 import static h11.utils.Assertions.assertMethod;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static h11.utils.Assertions.assertTrue;
 
 /**
  * Tests for class {@link CharFromUnicode}.
@@ -33,9 +31,8 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 public class Tutor_CharFromUnicodeTests extends AbstractTestClass {
 
-    private static Class<?> charFromUnicodeClass = null;
-    private static Constructor<?> charFromUnicodeConstructor = null;
-    private static Method apply = null;
+    public static final String CONSTRUCTOR_SIGNATURE = "CharFromUnicode()";
+    public static final String METHOD_APPLY_SIGNATURE = "apply(%s)".formatted(Integer.class.getName());
 
     public static boolean ILLEGAL_INSTRUCTION_USED = false;
 
@@ -43,7 +40,11 @@ public class Tutor_CharFromUnicodeTests extends AbstractTestClass {
      * Creates a new {@link Tutor_CharFromUnicodeTests} object.
      */
     public Tutor_CharFromUnicodeTests() {
-        super("h11.unicode.CharFromUnicode");
+        super(
+            "h11.unicode.CharFromUnicode",
+            Map.of(CONSTRUCTOR_SIGNATURE, predicateFromSignature("h11.unicode." + CONSTRUCTOR_SIGNATURE)),
+            Map.of(METHOD_APPLY_SIGNATURE, predicateFromSignature(METHOD_APPLY_SIGNATURE))
+        );
     }
 
     /**
@@ -52,20 +53,13 @@ public class Tutor_CharFromUnicodeTests extends AbstractTestClass {
     @Test
     @DisplayName("1 | Class, constructor and method definitions")
     public void testDefinitions() {
-        charFromUnicodeClass = assertClassExists(className);
-        assertClassHasExactModifiers(charFromUnicodeClass, Modifier.PUBLIC);
-        assertClassImplements(charFromUnicodeClass,
+        assertClassHasModifiers(clazz, Modifier.PUBLIC);
+        assertClassImplements(clazz,
             "%s<%s, %s>".formatted(Function.class.getName(), Integer.class.getName(), Character.class.getName()));
 
-        charFromUnicodeConstructor = assertClassHasConstructor(charFromUnicodeClass, constructor ->
-            constructor.getParameters().length == 0);
+        assertClassHasConstructor(this, CONSTRUCTOR_SIGNATURE);
 
-        apply = assertClassHasMethod(charFromUnicodeClass, method ->
-            method.getName().equals("apply")
-                && method.getReturnType().equals(Character.class)
-                && method.getParameterTypes().length == 1
-                && method.getParameterTypes()[0].equals(Integer.class));
-        assertMethod(apply,
+        assertMethod(assertClassHasMethod(this, METHOD_APPLY_SIGNATURE),
             Modifier.PUBLIC,
             null,
             null,
@@ -78,14 +72,9 @@ public class Tutor_CharFromUnicodeTests extends AbstractTestClass {
     @Test
     @DisplayName("2 | apply(java.lang.Integer)")
     public void testApply() {
-        assumeTrue(charFromUnicodeClass != null, "Class %s could not be found".formatted(className));
-        assumeTrue(charFromUnicodeConstructor != null,
-            "Constructor for class %s could not be found".formatted(className));
-        assumeTrue(apply != null,
-            "Method %s#apply(java.lang.Integer) could not be found".formatted(className));
-
-        Class<?> formatExceptionClass = Tutor_FormatExceptionTests.getFormatExceptionClass();
-        Object instance = newInstance(charFromUnicodeConstructor);
+        Class<?> formatExceptionClass = new Tutor_FormatExceptionTests().clazz;
+        Object instance = newInstance(getConstructor(CONSTRUCTOR_SIGNATURE));
+        Method apply = getMethod(METHOD_APPLY_SIGNATURE);
         boolean exceptionThrown1 = false;
         boolean exceptionThrown2 = false;
         boolean exceptionThrown3 = false;
@@ -139,7 +128,7 @@ public class Tutor_CharFromUnicodeTests extends AbstractTestClass {
     @DisplayName("2-R | No unsafe casts to char requirement")
     public void testUnsafeCast() {
         ILLEGAL_INSTRUCTION_USED = false;
-        invokeMethod(apply, newInstance(charFromUnicodeConstructor), (int) 'a');
+        invokeMethod(getMethod(METHOD_APPLY_SIGNATURE), newInstance(getConstructor(CONSTRUCTOR_SIGNATURE)), (int) 'a');
         assertTrue(ILLEGAL_INSTRUCTION_USED, "Unsafe cast to char detected (I2C instruction used)");
     }
 }

@@ -5,10 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.opentest4j.TestAbortedException;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -16,13 +14,11 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static h11.utils.Assertions.assertClassExists;
 import static h11.utils.Assertions.assertClassExtends;
 import static h11.utils.Assertions.assertClassHasConstructor;
-import static h11.utils.Assertions.assertClassHasExactModifiers;
+import static h11.utils.Assertions.assertClassHasModifiers;
 import static h11.utils.Assertions.assertConstructor;
 import static h11.utils.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Tests for {@link FormatException}.
@@ -31,14 +27,16 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 public class Tutor_FormatExceptionTests extends AbstractTestClass {
 
-    private static Class<?> formatExceptionClass = null;
-    private static Constructor<?> formatExceptionConstructor = null;
+    public static final String CONSTRUCTOR_SIGNATURE = "FormatException(int)";
 
     /**
      * Creates a new {@link Tutor_FormatExceptionTests} object.
      */
     public Tutor_FormatExceptionTests() {
-        super("h11.unicode.FormatException");
+        super(
+            "h11.unicode.FormatException",
+            Map.of(CONSTRUCTOR_SIGNATURE, predicateFromSignature("h11.unicode." + CONSTRUCTOR_SIGNATURE))
+        );
     }
 
     /**
@@ -47,15 +45,10 @@ public class Tutor_FormatExceptionTests extends AbstractTestClass {
     @Test
     @DisplayName("1 | Class and constructor definitions")
     public void testDefinitions() {
-        formatExceptionClass = assertClassExists(className);
-        assertClassHasExactModifiers(formatExceptionClass, Modifier.PUBLIC);
-        assertClassExtends(formatExceptionClass, type -> type.getTypeName().equals(RuntimeException.class.getName()));
+        assertClassHasModifiers(clazz, Modifier.PUBLIC);
+        assertClassExtends(clazz, type -> type.getTypeName().equals(RuntimeException.class.getName()));
 
-        formatExceptionConstructor = assertClassHasConstructor(formatExceptionClass, constructor -> {
-            Type[] parameterTypes = constructor.getGenericParameterTypes();
-            return parameterTypes.length == 1 && parameterTypes[0].getTypeName().equals(int.class.getName());
-        });
-        assertConstructor(formatExceptionConstructor, Modifier.PUBLIC, (Predicate<Type>) null);
+        assertConstructor(assertClassHasConstructor(this, CONSTRUCTOR_SIGNATURE), Modifier.PUBLIC, (Predicate<Type>) null);
     }
 
     /**
@@ -64,10 +57,6 @@ public class Tutor_FormatExceptionTests extends AbstractTestClass {
     @Test
     @DisplayName("2 | Class instance")
     public void testInstance() {
-        assumeTrue(formatExceptionClass != null, "Class %s could not be found".formatted(className));
-        assumeTrue(formatExceptionConstructor != null,
-            "Constructor for class %s could not be found".formatted(className));
-
         Map<Integer, String> parameterMapping = Stream
             .of(Character.MAX_CODE_POINT + 1,
                 Integer.MAX_VALUE,
@@ -79,7 +68,7 @@ public class Tutor_FormatExceptionTests extends AbstractTestClass {
 
         for (Map.Entry<Integer, String> entry : parameterMapping.entrySet()) {
             assertEquals(entry.getValue(),
-                ((Exception) newInstance(formatExceptionConstructor, entry.getKey())).getMessage(),
+                ((Exception) newInstance(getConstructor(CONSTRUCTOR_SIGNATURE), entry.getKey())).getMessage(),
                 "Actual exception message differs from expected one");
         }
     }
@@ -91,19 +80,6 @@ public class Tutor_FormatExceptionTests extends AbstractTestClass {
             return "%d exceeds 0xFFFF and cannot be represented by Character".formatted(i);
         } else {
             return "%d is a negative number and therefore not a valid code point".formatted(i);
-        }
-    }
-
-    /**
-     * Returns the {@link Class} object for {@link FormatException}.
-     *
-     * @return the {@link Class} object
-     */
-    public static Class<?> getFormatExceptionClass() {
-        try {
-            return Class.forName("h11.unicode.FormatException");
-        } catch (ClassNotFoundException e) {
-            throw new TestAbortedException("Class h11.unicode.FormatException could not be found", e);
         }
     }
 }
